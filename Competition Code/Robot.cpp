@@ -24,6 +24,11 @@ void Robot::read(int ID) {
 
 
 
+void Robot::change_target(Point des, int beh) {
+    target_position = des;
+    target_behavior = beh;
+}
+
 
 void Robot::move_to_target() {
     // 计算当前朝向 direction 与目标方向的偏差角
@@ -52,9 +57,10 @@ void Robot::move_to_target() {
         } else {
             instruct.push_back({0, 4});
         }
+        
         return;
     }
-    
+
 
     if (dis >= 1) {
         if (fabs(dir_bias) > PI / 2) {
@@ -71,14 +77,14 @@ void Robot::move_to_target() {
 
 
 
-
-void Robot::finish_mission() {
-    if (object()) {
-        destroy();
+void Robot::set_mission(Workbench *workbench_buy, Workbench *workbench_sell) {
+    if (Has_mission == 1) {
+        return;
     }
-
-    mission = {NULL, 0, NULL, 0};
-    Has_mission = 0;
+    
+    Has_mission = 1;
+    mission = {workbench_buy, 0, workbench_sell, 0};
+    perform_mission();
 }
 
 
@@ -90,7 +96,6 @@ void Robot::perform_mission() {
 
         // 到达买方
         if (!mission.flg_buy and mission.des_buy->ID() == workbench()) {
-
             buy();
             mission.flg_buy = 1;
             change_target({-1, -1}, -1);
@@ -114,11 +119,11 @@ void Robot::perform_mission() {
 
 
     // 否则设定目标，或结束任务
-    if (!mission.des_buy) {
+    if (!mission.flg_buy) {
 
         // 还没有买，则前往买方
         change_target(mission.des_buy->pos(), 0);
-    } else if (!mission.des_sell) {
+    } else if (!mission.flg_sell) {
 
         // 还没有卖，则前往卖方
         change_target(mission.des_sell->pos(), 1);
@@ -127,9 +132,19 @@ void Robot::perform_mission() {
         // 结束任务
         finish_mission();
     }
-
 }
 
+
+
+void Robot::finish_mission() {
+    if (type()) {
+        // destroy();
+    }
+
+    mission = {NULL, 0, NULL, 0};
+    change_target({-1, -1}, -1);
+    Has_mission = 0;
+}
 
 
 
@@ -160,7 +175,7 @@ void Robot::print_instruct(int ID) {
 
 
 
-int Robot::object() {
+int Robot::type() {
     return object_type;
 }
 
@@ -194,11 +209,6 @@ Point Robot::target_pos() {
 
 int Robot::target_be() {
     return target_behavior;
-}
-
-void Robot::change_target(Point des, int beh) {
-    target_position = des;
-    target_behavior = beh;
 }
 
 

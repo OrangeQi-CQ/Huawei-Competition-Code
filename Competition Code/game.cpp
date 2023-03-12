@@ -32,7 +32,7 @@ void Startgame::read_frame() {
     scanf("%d%d", &current_money, &num_workbench);
 
     for (int i = 0; i < num_workbench; i++) {
-        workbench[i].read(object);
+        workbench[i].read(object, i);
     }
 
     for (int id = 0; id < 4; id++) {
@@ -51,87 +51,77 @@ void Startgame::read_frame() {
 
 
 
-
-void Startgame::set_robot(int id, int from, int to) {
-
-
-    // 它所处的工作台类型
-    int pos_type = workbench[robot[id].workbench()].type();
-    auto &near_workbench = workbench[robot[id].workbench()];
-
-    if (workbench[robot[id].workbench()].pos() == robot[id].target_pos()
-        and near_workbench.find_material(robot[id].object()) == 1) {
-
-        robot[id].destroy();
-        robot[id].change_target({-1, -1}, -1);
+void Startgame::set_robot(int id, int type_buy, int type_sell) {
+    // 如果它已经有任务了，就继续执行它的任务
+    if (robot[id].has_mission()) {
+        robot[id].perform_mission();
         return;
     }
 
-    // 如果它已经有目标了
-    if (robot[id].target_pos().x != -1) {
 
-        //可以卖
-        if (robot[id].workbench() >= 0
-            and cal_distance(robot[id].pos(), robot[id].target_pos()) < 0.3) {
+    // 两个指针，分别指向前往购买的工作台，前往售卖的工作台
+    Workbench *workbench_buy = NULL, *workbench_sell = NULL;
 
-            robot[id].sell();
-            robot[id].change_target({-1, -1}, -1);
-        }
 
-        // 可以买
-        else if (robot[id].object() == 0
-                 and pos_type == from) {
+    // 寻找离他最近的 type_buy 类型的工作台
 
-            robot[id].buy();
-            robot[id].change_target({-1, -1}, -1);
-        }
+    double mindis = 1e9;
 
-        //继续原计划
-        else {
-            robot[id].move_to_target();
+    for (int i = 0; i < num_workbench; i++) {
+        double nowdis = cal_distance(robot[id].pos(), workbench[i].pos());
+
+        if (workbench[i].type() == type_buy
+            and nowdis < mindis) {
+
+            workbench_buy = &workbench[i];
+            mindis = nowdis;
         }
     }
 
-    // 完成任务了，需要设定新目标
-    else {
+    if (workbench_buy == NULL) {
+        return;
+    }
 
-        // 找最近的可以买的工作台
-        if (robot[id].object() == 0) {
-            int mindis = 1e9;
-            for (int i = 0; i < num_workbench; i++) {
-                if (workbench[i].type() == from
-                    and cal_distance(robot[id].pos(), workbench[i].pos()) < mindis) {
 
-                    robot[id].change_target({workbench[i].pos()}, 0);
-                    mindis = cal_distance(robot[id].pos(), workbench[i].pos());
-                }
-            }
-        }
 
-        // 找最近的可以卖的工作台
-        else {
-            int mindis = 1e9;
-            for (int i = 0; i < num_workbench; i++) {
-                if (workbench[i].type() == to
-                    and workbench[i].find_material(from) == 0
-                    and cal_distance(robot[id].pos(), workbench[i].pos()) < mindis) {
+    // 寻找离 workbench_buy 最近的 type_sell 类型的工作台
 
-                    robot[id].change_target({workbench[i].pos()}, 1);
-                    mindis = cal_distance(robot[id].pos(), workbench[i].pos());
-                }
-            }
+    mindis = 1e9;
 
+    for (int i = 0; i < num_workbench; i++) {
+        double nowdis = cal_distance(workbench_buy->pos(), workbench[i].pos());
+
+        if (workbench[i].type() == type_sell
+            and workbench[i].find_material(type_buy) == 0
+            and nowdis < mindis) {
+
+            workbench_sell = &workbench[i];
+            mindis = nowdis;
         }
     }
+
+    if (workbench_sell == NULL) {
+        return;
+    }
+
+
+    // 找到了一组买家和卖家，就设定任务
+    robot[id].set_mission(workbench_buy, workbench_sell);
+
 }
+
+
+
+
 
 
 void Startgame::calculate_frame() {
 
 
+
     // for (int i = 1; i <= 3; i++) {
     //     if (object.material[i].in_seek.size()) {
-    //         int x0 = workbench[*(object.material[i].in_seek.begin())].type();
+    //         int x0 = workbench[*(object.material[i].in_seek.begin())].ID();
     //         set_robot(i - 1, i, workbench[x0].type());
     //     }
     // }
@@ -159,7 +149,6 @@ void Startgame::calculate_frame() {
     } else {
         set_robot(3, 1, 5);
     }
-
 }
 
 
@@ -185,8 +174,8 @@ void Startgame::lets_work() {
     // 读入游戏地图
     Map.read_map();
 
-    // 逐帧处理
 
+    // 逐帧处理
     int new_frameID;
     while (scanf("%d", &new_frameID) != EOF) {
         if (new_frameID != frameID + 1) {

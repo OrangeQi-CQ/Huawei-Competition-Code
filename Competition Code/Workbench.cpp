@@ -9,7 +9,9 @@
 
 
 
-void Workbench::read(Object &object) {
+void Workbench::read(Object &object, int id) {
+    workbenchID = id;
+    
     scanf("%d", &workbench_type);
     scanf("%lf%lf", &position.x, &position.y);
 

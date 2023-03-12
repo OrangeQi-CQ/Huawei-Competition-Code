@@ -10,18 +10,12 @@
 class Workbench {
 public:
 
-    /**
-     * 参数：工作台类型
-     * 作用：初始化当前工作台的信息
-    */
-    void init(int _type);
-
 
     /**
      * 参数：当前帧的 ID
      * 作用：读取某一个工作帧的状态
     */
-    void read(Object &object);
+    void read(Object &object, int id);
 
     /**
      * 功能：返回这个工作台的类型

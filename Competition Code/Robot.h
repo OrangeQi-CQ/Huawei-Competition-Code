@@ -31,8 +31,15 @@ struct Instruct {
  * 结构体：机器人正在执行的任务
 */
 struct Mission {
+    /**
+     * 想要去购买的工作台指针，以及是否已经完成购买
+    */
     Workbench *des_buy;
     bool flg_buy = 0;
+
+    /**
+     * 想要去售卖的工作台指针，以及是否已经完成售卖
+    */
     Workbench *des_sell;
     bool flg_sell = 0;
 };
@@ -50,22 +57,36 @@ public:
 
 
     /**
-     * 参数：1. 一对横纵坐标，代表该机器人的目的地
-     *      2. 一个整数表示目的，0 为买，1 为卖
-     * 功能：结合当前的位置和状态参数，计算当前帧的指令，保存到 instruct 中
+     * 参数：两个工作台的指针
+     * 功能：设定一组任务：从 _buy 那里买，卖到 _sell 那里去
     */
-    void move_to_target();
-
+    void set_mission(Workbench *_buy, Workbench *_sell);
 
 
     /**
-     * 功能：执行任务
+    * 功能：在一帧当中执行任务
+    *   1. 根据 mission 中的信息，维护： target_position
+    *   2. 根据当前状态判断是否该 buy() 或 sell() 或 destroy()
     */
     void perform_mission();
 
 
     /**
-     * 功能：输出这个机器人的指令，并清空指令集
+     * 功能：修改这个机器人的目标位置、目标动作
+    */
+    void change_target(Point, int);
+
+
+    /**
+     * 功能：计算当前帧的指令，结果保存到 instruct 中
+     * 指令设计的依据是：Ptarget_position
+    */
+    void move_to_target();
+
+
+    /**
+     * 参数：当前机器人的 ID
+     * 功能：在一帧中，输出这个机器人的指令，并清空指令集
     */
     void print_instruct(int ID);
 
@@ -75,7 +96,7 @@ public:
      * 0：没有物品
      * 1-7：对应 7 种物品
     */
-    int object();
+    int type();
 
 
     /**
@@ -87,20 +108,22 @@ public:
 
 
     /**
-     * 功能：输出卖出的指令到 instruct 中
+     * 功能：输出 卖出 的指令到 instruct 中
     */
     void buy();
 
+
     /**
-     * 功能：输出购买的指令到 instruct 中
+     * 功能：输出 购买 的指令到 instruct 中
     */
     void sell();
 
 
     /**
-     * 功能：输出销毁的指令到 instruct 中
+     * 功能：输出 销毁 的指令到 instruct 中
     */
     void destroy();
+
 
     /**
      * 功能：返回机器人的位置
@@ -109,20 +132,16 @@ public:
 
 
     /**
-     * 功能：返回这个机器人的目标位置
+     * 功能：返回这个机器人当前动作的目标位置
     */
     Point target_pos();
 
 
     /**
      * 功能：返回这个机器人的目标动作
+     * 0 为买，1为卖
     */
     int target_be();
-
-    /**
-     * 功能：修改这个机器人的目标位置、目标动作
-    */
-    void change_target(Point, int);
 
 
     /**
@@ -135,10 +154,6 @@ public:
      * 功能：结束任务；
     */
     void finish_mission();
-
-
-    
-
 
 
 private:
