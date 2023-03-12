@@ -1,6 +1,7 @@
 #pragma once
-#include <set>
 
+#include "state.h"
+#include <set>
 
 
 class Material {
@@ -9,6 +10,7 @@ public:
 
     // 哪些工作台现在生产出来了这种原料
     std::set<int> on_sale;
+
 
     // 哪些工作台现在需求这种原料
     std::set<int> in_seek;
@@ -26,11 +28,19 @@ public:
     */
     void init();
 
-    Material material[55];
-    std::set<int> lock;
+
+    void init_set() {
+
+    }
+
+
+    Material material[15];
+
+
 
 
 private:
     int objectID;
+    bool have_init_set = 0;
 };
 

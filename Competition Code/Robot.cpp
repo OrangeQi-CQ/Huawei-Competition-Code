@@ -4,8 +4,7 @@
 #include "Object.h"
 #include "game.h"
 #include "Point.h"
-
-
+#include "state.h"
 #include <iostream>
 
 
@@ -20,6 +19,7 @@ void Robot::read(int ID) {
     scanf("%lf%lf", &li_speed.x, &li_speed.y);
     scanf("%lf", &direction);
     scanf("%lf%lf", &position.x, &position.y);
+
 }
 
 
@@ -57,7 +57,7 @@ void Robot::move_to_target() {
         } else {
             instruct.push_back({0, 4});
         }
-        
+
         return;
     }
 
@@ -73,44 +73,61 @@ void Robot::move_to_target() {
 
         return;
     }
+
+
+
 }
 
 
 
 void Robot::set_mission(Workbench *workbench_buy, Workbench *workbench_sell) {
     if (Has_mission == 1) {
-        return;
+        finish_mission();
     }
-    
+
     Has_mission = 1;
     mission = {workbench_buy, 0, workbench_sell, 0};
-    perform_mission();
 }
 
 
 
 void Robot::perform_mission() {
 
+    if (has_mission() == 0) {
+        return;
+    }
+
     // 如果它已经有目标了
     if (target_pos().x != -1) {
 
-        // 到达买方
-        if (!mission.flg_buy and mission.des_buy->ID() == workbench()) {
+        // 到达买方并且买方有商品
+        if (!mission.flg_buy
+            and mission.des_buy->ID() == workbench()
+            and mission.des_buy->have_product()) {
+
             buy();
+
             mission.flg_buy = 1;
             change_target({-1, -1}, -1);
             return;
         }
 
-        // 到达卖方
-        if (!mission.flg_sell and mission.des_sell->ID() == workbench()) {
+        // 到达卖方并且卖方有空余
+        if (!mission.flg_sell
+            and mission.des_sell->ID() == workbench()) {
 
-            sell();
-            mission.flg_sell = 1;
-            change_target({-1, -1}, -1);
-            return;
+            if (mission.des_sell->find_material(type())) {
+                destroy();
+                return;
+            } else {
+                sell();
+                mission.flg_sell = 1;
+                change_target({-1, -1}, -1);
+                return;
+            }
+
+
         }
-
 
         //继续原计划
         move_to_target();
@@ -133,6 +150,7 @@ void Robot::perform_mission() {
         finish_mission();
     }
 }
+
 
 
 
@@ -186,6 +204,11 @@ int Robot::workbench() {
 
 
 void Robot::buy() {
+    
+    if (frameID > 8500) {
+        return;
+    }
+
     instruct.push_back({2});
 }
 

@@ -4,6 +4,7 @@
 #include "Object.h"
 #include "game.h"
 #include "Point.h"
+#include "state.h"
 
 #include <iostream>
 
@@ -20,6 +21,7 @@ void Workbench::read(Object &object, int id) {
 
     int material_state;
     scanf("%d", &material_state);
+
 
     now_material.clear();
     std::set<int> lack;
@@ -44,7 +46,7 @@ void Workbench::read(Object &object, int id) {
         case 8:
             lack = {7};
             break;
-        default:
+        case 9:
             lack = {1, 2, 3, 4, 5, 6, 7};
             break;
     }
@@ -54,7 +56,6 @@ void Workbench::read(Object &object, int id) {
         if (material_state & (1 << i)) {
             now_material.insert(i);
             lack.erase(i);
-            // object.material[i].in_seek.erase(workbenchID);
         }
     }
 
@@ -64,6 +65,8 @@ void Workbench::read(Object &object, int id) {
 
 
     scanf("%d", &Have_product);
+    
+    // Have_product = 1 - Have_product;
 
     if (Have_product) {
         object.material[type()].on_sale.insert(workbenchID);

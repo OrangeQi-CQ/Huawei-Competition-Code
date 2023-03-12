@@ -5,7 +5,9 @@
 #include "Map.h"
 #include "Object.h"
 #include "Point.h"
+#include "state.h"
 #include <set>
+
 
 class Workbench {
 public:

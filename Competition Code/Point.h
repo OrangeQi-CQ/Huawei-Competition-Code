@@ -5,6 +5,7 @@
 #pragma once
 #include <math.h>
 
+
 typedef double angle;
 const int PI = acos(-1);
 

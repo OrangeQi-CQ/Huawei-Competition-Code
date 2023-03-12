@@ -1,9 +1,12 @@
+#include "state.h"
 #include "Robot.h"
 #include "Workbench.h"
 #include "Map.h"
 #include "Object.h"
 #include "game.h"
 #include "Point.h"
+
+
 
 
 #include <iostream>
@@ -17,7 +20,7 @@ Startgame Game;
 
 
 int main() {
-    // freopen("input test.txt", "r", stdin);
+    // freopen("1.txt", "r", stdin);
     // freopen("output test.txt", "w", stdout);
 
     Game.lets_work();

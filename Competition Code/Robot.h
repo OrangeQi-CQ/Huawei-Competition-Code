@@ -2,7 +2,9 @@
 
 #include "Point.h"
 #include "Workbench.h"
+#include "state.h"
 #include <vector>
+
 
 
 
@@ -156,7 +158,12 @@ public:
     void finish_mission();
 
 
-private:
+
+    // 当前机器人即将发出的指令集
+    std::vector<Instruct> instruct;
+
+
+// private:
 
     // 当前机器人编号，也就是 robot 的数组下标
     int RobotID;
@@ -190,9 +197,6 @@ private:
 
     // 横、纵位置坐标
     Point position;
-
-    // 当前机器人即将发出的指令集
-    std::vector<Instruct> instruct;
 
     // 记录这个机器人想要前往的工作台编号
     Point target_position = {-1, -1};

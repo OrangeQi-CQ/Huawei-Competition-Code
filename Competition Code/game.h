@@ -5,6 +5,9 @@
 #include "Map.h"
 #include "Object.h"
 #include "Point.h"
+#include "state.h"
+
+
 
 
 
@@ -16,7 +19,8 @@ public:
      *       如果他正在路上，就维持他原本的计划
      * 作用：设定机器人的调度
     */
-    void set_robot(int id, int from, int to);
+    bool set_robot(int id, std::vector<int> _buy, std::vector<int> _sell);
+
 
     // 跳过不完整的帧
     // bool read_until_OK();
@@ -42,6 +46,6 @@ private:
 
     GameMap Map;
     Robot robot[4];
-    Workbench workbench[55];    
+    Workbench workbench[55];
     Object object;
 };
