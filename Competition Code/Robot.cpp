@@ -87,6 +87,8 @@ void Robot::set_mission(Workbench *workbench_buy, Workbench *workbench_sell) {
 
     Has_mission = 1;
     mission = {workbench_buy, 0, workbench_sell, 0};
+    workbench_buy->isd=1;
+    workbench_sell->isd=1;
 }
 
 
@@ -106,6 +108,7 @@ void Robot::perform_mission() {
             and mission.des_buy->have_product()) {
 
             buy();
+            mission.des_buy->isd=0;
 
             mission.flg_buy = 1;
             change_target({-1, -1}, -1);
@@ -121,8 +124,10 @@ void Robot::perform_mission() {
                 return;
             } else {
                 sell();
+                mission.des_sell->isd=0;
                 mission.flg_sell = 1;
-                change_target({-1, -1}, -1);
+                //change_target({-1, -1}, -1);
+                finish_mission();
                 return;
             }
 
@@ -140,10 +145,12 @@ void Robot::perform_mission() {
 
         // 还没有买，则前往买方
         change_target(mission.des_buy->pos(), 0);
+        move_to_target();
     } else if (!mission.flg_sell) {
 
         // 还没有卖，则前往卖方
         change_target(mission.des_sell->pos(), 1);
+        move_to_target();
     } else {
 
         // 结束任务
@@ -158,7 +165,8 @@ void Robot::finish_mission() {
     if (type()) {
         // destroy();
     }
-
+    mission.des_buy->isd=0;
+    mission.des_sell->isd=0;
     mission = {NULL, 0, NULL, 0};
     change_target({-1, -1}, -1);
     Has_mission = 0;

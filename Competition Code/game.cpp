@@ -82,7 +82,7 @@ bool Startgame::set_robot(int id, vector<int> type_buy,
                 break;
             }
         }
-        if (flg == 0 or !workbench[i].have_product() ) {
+        if (flg == 0 or !workbench[i].have_product() or workbench[i].isd) {
             continue;
         }
 
@@ -115,7 +115,7 @@ bool Startgame::set_robot(int id, vector<int> type_buy,
                 break;
             }
         }
-        if (flg == 0 or workbench[i].find_material(workbench_buy->type())) {
+        if (flg == 0 or workbench[i].find_material(workbench_buy->type()) or workbench[i].isd) {
             continue;
         }
 
@@ -212,9 +212,7 @@ void Startgame::calculate_frame() {
     set_robot(2, {3}, {5, 6, 9});
 
 
-    if (set_robot(3, {8}, {9})) {
-        ;
-    } else if (set_robot(3, {7}, {8, 9})) {
+    if (set_robot(3, {7}, {8, 9})) {
         ;
     } else if (set_robot(3, {4, 5, 6}, {7, 9})) {
         ;
@@ -223,12 +221,14 @@ void Startgame::calculate_frame() {
     } else if (set_robot(3, {2}, {4, 6, 9})) {
         ;
     } else {
-        set_robot(2, {3}, {5, 6, 9});
+        set_robot(3, {3}, {5, 6, 9});
     }
 
 
-/****************************************************/
 
+    /**
+     * 预防碰撞死锁
+    */
 
     for (int i = 0; i < 4; i++) {
         for (int j = i + 1; j < 4; j++) {

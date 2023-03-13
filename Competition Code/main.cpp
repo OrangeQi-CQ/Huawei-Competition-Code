@@ -12,7 +12,7 @@
 #include <iostream>
 
 /*
-g++ *.cpp -o C:\Users\20824\Desktop\WindowsRelease\Demo\SimpleDemo.exe
+g++ *.cpp -o D:\ccc\hw3\a\WindowsRelease\Demo\SimpleDemo.exe
 */
 
 
