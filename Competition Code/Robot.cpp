@@ -24,157 +24,6 @@ void Robot::read(int ID) {
 
 
 
-void Robot::change_target(Point des, int beh) {
-    target_position = des;
-    target_behavior = beh;
-}
-
-
-void Robot::move_to_target() {
-    // 计算当前朝向 direction 与目标方向的偏差角
-    double dir_bias = direction - cal_dir(position, target_position);
-    double dis = cal_distance(target_position, position);
-
-
-    if (dir_bias > PI) {
-        dir_bias -= 2 * PI;
-    } else if (dir_bias < -PI) {
-        dir_bias += 2 * PI;
-    }
-
-    int sig = dir_bias > 0 ? 1 : -1;
-    if (fabs(dir_bias) >= PI / 6) {
-        instruct.push_back({1, -1.0 * sig * PI});
-    }
-    instruct.push_back({1, -6 * dir_bias});
-
-
-    if (dis < 1) {
-        if (fabs(dir_bias) > PI / 2) {
-            instruct.push_back({0, -1});
-        } else if (fabs(dir_bias) > PI / 4) {
-            instruct.push_back({0, 2});
-        } else {
-            instruct.push_back({0, 4});
-        }
-
-        return;
-    }
-
-
-    if (dis >= 1) {
-        if (fabs(dir_bias) > PI / 2) {
-            instruct.push_back({0, -1});
-        } else if (fabs(dir_bias) > PI / 4) {
-            instruct.push_back({0, 5});
-        } else {
-            instruct.push_back({0, 6});
-        }
-
-        return;
-    }
-
-
-
-}
-
-
-
-void Robot::set_mission(Workbench *workbench_buy, Workbench *workbench_sell) {
-    if (Has_mission == 1) {
-        finish_mission();
-    }
-
-    Has_mission = 1;
-    mission = {workbench_buy, 0, workbench_sell, 0};
-    workbench_buy->isd=1;
-    workbench_sell->isd=1;
-}
-
-
-
-void Robot::perform_mission() {
-
-    if (has_mission() == 0) {
-        return;
-    }
-
-    // 如果它已经有目标了
-    if (target_pos().x != -1) {
-
-        // 到达买方并且买方有商品
-        if (!mission.flg_buy
-            and mission.des_buy->ID() == workbench()
-            and mission.des_buy->have_product()) {
-
-            buy();
-            mission.des_buy->isd=0;
-
-            mission.flg_buy = 1;
-            change_target({-1, -1}, -1);
-            return;
-        }
-
-        // 到达卖方并且卖方有空余
-        if (!mission.flg_sell
-            and mission.des_sell->ID() == workbench()) {
-
-            if (mission.des_sell->find_material(type())) {
-                destroy();
-                return;
-            } else {
-                sell();
-                mission.des_sell->isd=0;
-                mission.flg_sell = 1;
-                //change_target({-1, -1}, -1);
-                finish_mission();
-                return;
-            }
-
-
-        }
-
-        //继续原计划
-        move_to_target();
-        return;
-    }
-
-
-    // 否则设定目标，或结束任务
-    if (!mission.flg_buy) {
-
-        // 还没有买，则前往买方
-        change_target(mission.des_buy->pos(), 0);
-        move_to_target();
-    } else if (!mission.flg_sell) {
-
-        // 还没有卖，则前往卖方
-        change_target(mission.des_sell->pos(), 1);
-        move_to_target();
-    } else {
-
-        // 结束任务
-        finish_mission();
-    }
-}
-
-
-
-
-void Robot::finish_mission() {
-    if (type()) {
-        // destroy();
-    }
-    mission.des_buy->isd=0;
-    mission.des_sell->isd=0;
-    mission = {NULL, 0, NULL, 0};
-    change_target({-1, -1}, -1);
-    Has_mission = 0;
-}
-
-
-
-
 void Robot::print_instruct(int ID) {
     for (auto inst : instruct) {
         switch (inst.instruct_type) {
@@ -201,25 +50,183 @@ void Robot::print_instruct(int ID) {
 
 
 
-int Robot::type() {
-    return object_type;
+
+
+void Robot::set_mission(Workbench *workbench_buy, Workbench *workbench_sell) {
+    if (Has_mission == 1) { // 如果本来就有一个任务，就继续执行
+        // finish_mission();
+        perform_mission();
+    }
+
+    // 进行一系列初始化
+    Has_mission = 1;
+    mission = {workbench_buy, 0, workbench_sell, 0};
+    workbench_buy->reserve_product();
+    workbench_sell->reserve_material(workbench_buy->type());
 }
 
 
-int Robot::workbench() {
-    return workbench_type;
+
+void Robot::perform_mission() {
+
+    if (has_mission() == 0) {
+        return; // 理论上不会发生
+    }
+
+    int t = mission.des_buy->type();
+
+
+    // 如果它已经有目的地了
+    if (target_pos().x != -1) {
+
+        // 到达买入处并且他有商品，就尝试购买
+        if (cal_distance(mission.des_buy->pos(), pos()) < 0.2
+            and mission.des_buy->have_product()
+            and type() == 0) {
+
+
+            buy(); // 生成指令到 instruct
+            mission.flg_buy = 1; // 标志已经发出购买指令
+            return;
+        }
+
+        // 判断购买成功
+        if (mission.flg_buy == 1
+            and type() > 0
+            and cal_distance(mission.des_buy->pos(), pos()) < 0.2) {
+
+            mission.des_buy->cancel_reserve_product(); // 取消买入地的产品预定
+            change_target({-1, -1}); // 修改 target_position
+            return;
+        }
+
+
+        // 到达卖出处并且他有空余原料格
+        if (!mission.flg_sell
+            and cal_distance(mission.des_sell->pos(), pos()) < 0.2
+            and mission.des_sell->find_material(mission.des_buy->type()) == 0
+            and type() > 0) {
+
+
+            sell(); // 生成指令到 instruct
+            mission.flg_sell = 1; // 修改mission的过程标志
+            return;
+
+        }
+
+        if (mission.flg_sell == 1
+            and type() == 0
+            and cal_distance(mission.des_sell->pos(), pos()) < 0.2) {
+
+            mission.des_sell->cancel_reserve_material(t); // 取消卖出地的原料预定
+            change_target({-1, -1});
+            return;
+        }
+
+        //继续原计划
+        move_to_target();
+        return;
+    }
+
+
+    // 否则设定目的地，或结束任务
+    if (!mission.flg_buy) {
+
+        // 还没有买，则前往买方
+        change_target(mission.des_buy->pos());
+        move_to_target();
+    } else if (!mission.flg_sell) {
+
+        // 还没有卖，则前往卖方
+        change_target(mission.des_sell->pos());
+        move_to_target();
+    } else {
+
+        // 结束任务
+        finish_mission();
+    }
 }
+
+
+
+
+void Robot::finish_mission() {
+    if (type()) {
+        // 理论上不会发生
+        // destroy();
+    }
+
+    // 一系列清空。
+    // 特别注意产品预定标志在结束购买或出售的时候就已经修改过了
+    mission.des_buy->cancel_reserve_product();
+    mission.des_sell->cancel_reserve_material(mission.des_buy->type());
+    mission = {NULL, 0, NULL, 0};
+    change_target({-1, -1});
+    Has_mission = 0;
+}
+
+
+
+void Robot::change_target(Point des) {
+    target_position = des;
+}
+
+
+void Robot::move_to_target() {
+    // 计算当前朝向 direction 与目标方向的偏差角
+    double dir_bias = direction - cal_dir(position, target_position);
+    double dis = cal_distance(target_position, position);
+
+    if (dir_bias > PI) {
+        dir_bias -= 2 * PI;
+    } else if (dir_bias < -PI) {
+        dir_bias += 2 * PI;
+    }
+
+    int sig = dir_bias > 0 ? 1 : -1;
+    if (fabs(dir_bias) >= PI / 6) {
+        instruct.push_back({1, -1.0 * sig * PI});
+    }
+    instruct.push_back({1, -6 * dir_bias});
+
+    if (dis < 1) {
+        if (fabs(dir_bias) > PI / 2) {
+            instruct.push_back({0, -1});
+        } else if (fabs(dir_bias) > PI / 4) {
+            instruct.push_back({0, 3});
+        } else {
+            instruct.push_back({0, 4});
+        }
+
+        return;
+    }
+
+    if (dis >= 1) {
+        if (fabs(dir_bias) > PI / 2) {
+            instruct.push_back({0, -1});
+        } else if (fabs(dir_bias) > PI / 4) {
+            instruct.push_back({0, 5});
+        } else {
+            instruct.push_back({0, 6});
+        }
+        return;
+    }
+}
+
+
+
+
+
+
 
 
 void Robot::buy() {
-    
     if (frameID > 8500) {
         return;
     }
 
     instruct.push_back({2});
 }
-
 
 void Robot::sell() {
     instruct.push_back({3});
@@ -230,6 +237,21 @@ void Robot::destroy() {
 }
 
 
+
+
+
+
+
+
+
+int Robot::ID() {
+    return RobotID;
+}
+
+int Robot::type() {
+    return object_type;
+}
+
 Point Robot::pos() {
     return position;
 }
@@ -238,11 +260,11 @@ Point Robot::target_pos() {
     return target_position;
 }
 
-int Robot::target_be() {
-    return target_behavior;
-}
-
-
 bool Robot::has_mission() {
     return Has_mission;
 }
+
+int Robot::workbench() {
+    return workbench_type;
+}
+

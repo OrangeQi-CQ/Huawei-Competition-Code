@@ -1,5 +1,7 @@
 #pragma once
 
+#if 0
+
 #include "state.h"
 #include <set>
 
@@ -16,7 +18,6 @@ public:
     std::set<int> in_seek;
 
 };
-
 
 
 class Object {
@@ -44,3 +45,5 @@ private:
     bool have_init_set = 0;
 };
 
+
+#endif

@@ -3,6 +3,7 @@
 #include "Point.h"
 #include "Workbench.h"
 #include "state.h"
+
 #include <vector>
 
 
@@ -33,6 +34,7 @@ struct Instruct {
  * 结构体：机器人正在执行的任务
 */
 struct Mission {
+
     /**
      * 想要去购买的工作台指针，以及是否已经完成购买
     */
@@ -52,17 +54,26 @@ struct Mission {
 class Robot {
 public:
 
+    friend class Game;
+
     /**
      * 功能：在当前帧中读入该机器人的参数
     */
     void read(int ID);
 
+    /**
+    * 参数：当前机器人的 ID
+    * 功能：在一帧中，输出这个机器人的指令，并清空指令集
+    */
+    void print_instruct(int ID);
+
+
 
     /**
      * 参数：两个工作台的指针
-     * 功能：设定一组任务：从 _buy 那里买，卖到 _sell 那里去
+     * 功能：设定一组任务：从 workbench_buy 那里买，卖到 workbench_sell 那里去
     */
-    void set_mission(Workbench *_buy, Workbench *_sell);
+    void set_mission(Workbench *workbench_buy, Workbench *workbench_sell);
 
 
     /**
@@ -72,11 +83,16 @@ public:
     */
     void perform_mission();
 
+    /**
+     * 功能：结束任务；
+    */
+    void finish_mission();
+
 
     /**
      * 功能：修改这个机器人的目标位置、目标动作
     */
-    void change_target(Point, int);
+    void change_target(Point target_point);
 
 
     /**
@@ -85,28 +101,6 @@ public:
     */
     void move_to_target();
 
-
-    /**
-     * 参数：当前机器人的 ID
-     * 功能：在一帧中，输出这个机器人的指令，并清空指令集
-    */
-    void print_instruct(int ID);
-
-
-    /**
-     * 功能：返回这个机器人所携带的物品编号；
-     * 0：没有物品
-     * 1-7：对应 7 种物品
-    */
-    int type();
-
-
-    /**
-     * 功能：返回这个机器人所在的工作台编号；
-     * -1：没有处在任何工作台附近
-     * 0 ~ num_workbench - 1：所在工作台编号
-    */
-    int workbench();
 
 
     /**
@@ -127,6 +121,23 @@ public:
     void destroy();
 
 
+
+    /**
+    * 功能：返回这个机器人的ID
+    */
+    int ID();
+
+
+    /**
+     * 功能：返回这个机器人所携带的物品编号；
+     * 0：没有物品
+     * 1-7：对应 7 种物品
+    */
+    int type();
+
+
+
+
     /**
      * 功能：返回机器人的位置
     */
@@ -139,12 +150,6 @@ public:
     Point target_pos();
 
 
-    /**
-     * 功能：返回这个机器人的目标动作
-     * 0 为买，1为卖
-    */
-    int target_be();
-
 
     /**
      * 功能：返回当前机器人是否在任务中
@@ -153,17 +158,26 @@ public:
 
 
     /**
-     * 功能：结束任务；
+    * 功能：返回这个机器人所在的工作台编号；
+    * -1：没有处在任何工作台附近
+    * 0 ~ num_workbench - 1：所在工作台编号
     */
-    void finish_mission();
+    int workbench();
 
 
+
+
+
+
+
+private:
 
     // 当前机器人即将发出的指令集
     std::vector<Instruct> instruct;
 
+    // 这个机器人正在执行的任务
+    Mission mission;
 
-// private:
 
     // 当前机器人编号，也就是 robot 的数组下标
     int RobotID;
@@ -201,13 +215,8 @@ public:
     // 记录这个机器人想要前往的工作台编号
     Point target_position = {-1, -1};
 
-    // 记录这个机器人想要去目的地做的事情（买为 0，卖为1）
-    int target_behavior = -1;
 
     // 这个机器人是否在任务中
     bool Has_mission = 0;
-
-    // 这个机器人正在执行的任务
-    Mission mission;
 
 };

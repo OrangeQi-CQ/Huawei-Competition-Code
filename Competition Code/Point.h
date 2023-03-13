@@ -3,6 +3,7 @@
  * 这个文件实现平面上点。
 */
 #pragma once
+#include "state.h"
 #include <math.h>
 
 

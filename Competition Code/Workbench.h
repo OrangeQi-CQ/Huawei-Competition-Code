@@ -1,23 +1,62 @@
 #pragma once
 
 
-#include "Robot.h"
 #include "Map.h"
-#include "Object.h"
 #include "Point.h"
 #include "state.h"
+
 #include <set>
+#include <bitset>
 
 
 class Workbench {
 public:
 
-
     /**
      * 参数：当前帧的 ID
      * 作用：读取某一个工作帧的状态
     */
-    void read(Object &object, int id);
+    void read(int id);
+
+    /*************************************************************/
+    // 关于预定的一组函数
+
+    /**
+     * 功能：查询这个原料格是否没有预定，被预定返回1
+    */
+    bool check_reserved_material(int type_material);
+
+    /**
+     * 功能：预定类型为 type_material 的原料格
+    */
+    void reserve_material(int type_material);
+
+
+    /**
+     * 功能：收到原料 type_material，取消预定
+    */
+    void cancel_reserve_material(int type_material);
+
+
+    /**
+     * 功能：查询这个产品格已经预定，被预定过返回1
+    */
+    bool check_reserved_product();
+
+    /**
+     * 功能：预定产品格
+    */
+    void reserve_product();
+
+
+    /**
+     * 功能：取消预定产品格
+    */
+    void cancel_reserve_product();
+
+    /*************************************************************/
+    //查询类函数
+
 
     /**
      * 功能：返回这个工作台的类型
@@ -44,13 +83,6 @@ public:
      * 功能：查询这个工作台的编号
     */
     int ID();
-
-
-    /**
-     * 含义：记录这个工作台现在是否为某个机器人的目的地
-     * 避免不同机器人的目的地重复
-    */
-    bool isd = 0;
 
 
 private:
@@ -89,8 +121,14 @@ private:
     // 这个工作台已经拥有的原料
     std::set<int> now_material;
 
+    /**
+     * 记录这个原料格是否已经被预定
+    */
+    std::bitset<15> material_is_reserved;
+
+    /**
+     * 记录这个产品格是否已经被预定
+    */
+    bool product_is_reserved;
 };
-
-
-
 

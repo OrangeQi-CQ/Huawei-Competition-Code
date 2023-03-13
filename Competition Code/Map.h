@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Robot.h"
-#include "Workbench.h"
+
+
 #include "Map.h"
-#include "Object.h"
+
 
 
 
@@ -14,5 +14,5 @@ public:
 
 private:
     char game_map[105][105];
-    char templine[10];
+    char templine[1024];
 };

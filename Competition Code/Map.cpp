@@ -18,3 +18,4 @@ void GameMap::read_map() {
     puts("OK");
     fflush(stdout);
 } 
+

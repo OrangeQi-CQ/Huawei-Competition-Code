@@ -6,12 +6,13 @@
 #include "Object.h"
 #include "Point.h"
 #include "state.h"
+#include "Task.h"
 
 
 
 
 
-class Startgame {
+class Game {
 public:
 
     /**
@@ -21,6 +22,10 @@ public:
     */
     bool set_robot(int id, std::vector<int> _buy, std::vector<int> _sell);
 
+    /**
+     * 避免碰撞
+    */
+    void avoid_colision();
 
     // 跳过不完整的帧
     // bool read_until_OK();
@@ -42,10 +47,11 @@ private:
     /**
      * 用来读取时的一些问题
     */
-    char templine[1024];
 
-    GameMap Map;
-    Robot robot[4];
-    Workbench workbench[55];
-    Object object;
+   Workbench workbench[55];
+   Robot robot[4];
+   GameMap Map;
+   TaskManager taskmanager;
+   char templine[1024];
+
 };

@@ -10,9 +10,9 @@
 
 
 
-void Workbench::read(Object &object, int id) {
+void Workbench::read(int id) {
     workbenchID = id;
-    
+
     scanf("%d", &workbench_type);
     scanf("%lf%lf", &position.x, &position.y);
 
@@ -24,65 +24,66 @@ void Workbench::read(Object &object, int id) {
 
 
     now_material.clear();
-    std::set<int> lack;
-
-    switch (workbench_type) {
-        case 1:
-        case 2:
-        case 3:
-            break;
-        case 4:
-            lack = {1, 2};
-            break;
-        case 5:
-            lack = {1, 3};
-            break;
-        case 6:
-            lack = {2, 3};
-            break;
-        case 7:
-            lack = {4, 5, 6};
-            break;
-        case 8:
-            lack = {7};
-            break;
-        case 9:
-            lack = {1, 2, 3, 4, 5, 6, 7};
-            break;
-    }
-
 
     for (int i = 1; i <= 9; i++) {
         if (material_state & (1 << i)) {
             now_material.insert(i);
-            lack.erase(i);
         }
     }
 
-    for (int x : lack) {
-        object.material[x].in_seek.insert(workbenchID);
-    }
-
-
     scanf("%d", &Have_product);
-    
-    // Have_product = 1 - Have_product;
 
-    if (Have_product) {
-        object.material[type()].on_sale.insert(workbenchID);
-    }
+//     if (Have_product) {
+//         object.material[type()].on_sale.insert(workbenchID);
+//     }
+// }
 }
 
 
 
-bool Workbench::find_material(int x) {
-    return now_material.find(x) != now_material.end();
+/*************************************************************/
+// 关于预定的一组函数
+
+bool Workbench::check_reserved_material(int type_material) {
+    return material_is_reserved[type_material];
 }
+
+void Workbench::reserve_material(int type_material) {
+    material_is_reserved[type_material] = 1;
+}
+
+
+void Workbench::cancel_reserve_material(int type_material) {
+    material_is_reserved[type_material] = 0;
+}
+
+
+bool Workbench::check_reserved_product() {
+    return product_is_reserved;
+}
+
+void Workbench::reserve_product() {
+    product_is_reserved = 1;
+}
+
+
+void Workbench::cancel_reserve_product() {
+    product_is_reserved = 0;
+}
+
+
+/*************************************************************/
+
 
 
 
 int Workbench::ID() {
     return workbenchID;
+}
+
+
+bool Workbench::find_material(int x) {
+    return now_material.find(x) != now_material.end();
 }
 
 
@@ -97,3 +98,4 @@ Point Workbench::pos() {
 bool Workbench::have_product() {
     return Have_product;
 }
+

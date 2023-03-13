@@ -7,8 +7,6 @@
 #include "Point.h"
 
 
-
-
 #include <iostream>
 
 /*
@@ -16,13 +14,13 @@ g++ *.cpp -o D:\ccc\hw3\a\WindowsRelease\Demo\SimpleDemo.exe
 */
 
 
-Startgame Game;
+Game game;
 
 
 int main() {
     // freopen("1.txt", "r", stdin);
     // freopen("output test.txt", "w", stdout);
 
-    Game.lets_work();
+    game.lets_work();
     return 0;
 } 

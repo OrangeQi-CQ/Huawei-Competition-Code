@@ -1,6 +1,6 @@
 #include "Object.h"
 
-
+#if 0
 
 void Object::init() {
     for (int i = 0; i <= 10; i++) {
@@ -9,3 +9,5 @@ void Object::init() {
         // has[i] = 0;
     }
 }
+
+#endif
