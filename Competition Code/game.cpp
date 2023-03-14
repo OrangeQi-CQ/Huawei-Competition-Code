@@ -155,7 +155,7 @@ bool Game::set_robot(int id, vector<int> type_buy,
 //                 dv += 2 * PI;
 //             }
 
-            
+
 //         }
 //     }
 
@@ -165,8 +165,32 @@ bool Game::set_robot(int id, vector<int> type_buy,
 void Game::avoid_colision() {
     for (int i = 0; i < 4; i++) {
         for (int j = i + 1; j < 4; j++) {
-            if (cal_distance(robot[i].pos(), robot[j].pos()) < 2.5) {
-
+            float a = robot[i].direction - cal_dir(robot[i].pos(), robot[j].pos());
+            float b = cal_dir(robot[j].pos(), robot[i].pos()) - robot[j].direction;
+            while (a < -PI) {
+                a += PI * 2;
+            }
+            while (a > PI) {
+                a -= PI * 2;
+            }
+            a = abs(a);
+            while (b < -PI) {
+                b += PI * 2;
+            }
+            while (a > PI) {
+                b -= PI * 2;
+            }
+            b = abs(b);
+            double av = sqrt(robot[i].li_speed.x * robot[i].li_speed.x + robot[i].li_speed.y
+                             * robot[i].li_speed.y);
+            double bv = sqrt(robot[j].li_speed.x * robot[j].li_speed.x + robot[j].li_speed.y
+                             * robot[j].li_speed.y);
+            double ab = cal_distance(robot[i].pos(), robot[j].pos());
+            double ac = ab * sin(a) / sin(PI - a - b);
+            double bc = ab * sin(b) / sin(PI - a - b);
+            //if(ac*bc<0) continue;
+            if (abs(ac / av - bc / bv) * (av + bv) < 1.2 || (ab < 2.5
+                    && abs(abs(a - b) - PI) < 0.3)) {
                 double cc = (rand() % 50) / 100 + 0.5;
                 cc = 1;
                 double ii = (cal_dir(robot[j].pos(),
@@ -178,10 +202,11 @@ void Game::avoid_colision() {
                     ii -= PI * 2;
                 }
 
+                ii = PI * ii * (1 / abs(ii)) * 0.99;
+
                 Instruct tt = {1, ii * cc};
                 robot[i].instruct.push_back(tt);
-                tt = {0, 6};
-                robot[i].instruct.push_back(tt);
+
                 cc = (rand() % 50) / 100 + 0.5;
                 cc = 1;
                 ii = (cal_dir(robot[i].pos(),
@@ -192,11 +217,12 @@ void Game::avoid_colision() {
                 while (ii > PI) {
                     ii -= PI * 2;
                 }
+
+                ii = PI * ii * (1 / abs(ii)) * 0.99;
+
                 tt = {1, ii * cc};
                 robot[j].instruct.push_back(tt);
-                tt = {0, 6};
-                robot[j].instruct.push_back(tt);
-
+                //robot[i].instruct.push_back({0,1});
             }
         }
     }
@@ -226,8 +252,8 @@ void Game::calculate_frame() {
 
             if (task.workbench_buy->check_reserved_product()
                 or task.workbench_sell->check_reserved_material(task.workbench_buy->type())) {
-                    continue;
-                }
+                continue;
+            }
 
             // printf("%d %d\n", task.workbench_buy->ID(), task.workbench_sell ->ID());
             double now_dis = task.dis + cal_distance(task.workbench_buy->pos(),
@@ -248,6 +274,7 @@ void Game::calculate_frame() {
 
             des_buy->reserve_product();
             des_sell->reserve_material(des_buy->type());
+            robot[i].perform_mission();
 
             // printf("robot %d: %d %d\n", i, des_buy->ID(), des_sell->ID());
         }

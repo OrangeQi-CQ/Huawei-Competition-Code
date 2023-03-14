@@ -173,7 +173,13 @@ void Robot::change_target(Point des) {
 
 
 void Robot::move_to_target() {
-    // 计算当前朝向 direction 与目标方向的偏差角
+    if (target_pos().x == -1) {
+        return;
+    }
+
+    /**
+     * 第零步：计算当前朝向 direction 与目标方向的偏差角
+    */
     double dir_bias = direction - cal_dir(position, target_position);
     double dis = cal_distance(target_position, position);
 
@@ -183,32 +189,77 @@ void Robot::move_to_target() {
         dir_bias += 2 * PI;
     }
 
+
+    /**
+     * 第一步：决定角速度大小和方向
+    */
     int sig = dir_bias > 0 ? 1 : -1;
     if (fabs(dir_bias) >= PI / 6) {
         instruct.push_back({1, -1.0 * sig * PI});
     }
     instruct.push_back({1, -6 * dir_bias});
 
+
+    /**
+     * 第二步：决定线速度大小
+    */
+
+    // 距离目标超级近
     if (dis < 3) {
         if (fabs(dir_bias) > PI / 2) {
-            instruct.push_back({0, -1});
-        } else if (fabs(dir_bias) > PI / 4) {
-            instruct.push_back({0, 3});
-        } else {
-            instruct.push_back({0, 6});
+            if (dis > 0.3) {
+                instruct.push_back({0, -2});
+            }
+            return;
         }
 
+        if (fabs(dir_bias) > PI / 4) {
+            if (dis < 0.4) {
+                instruct.push_back({0, 6});
+            } else {
+                instruct.push_back({0, 6});
+            }
+            return;
+        }
+
+        instruct.push_back({0, 6});
         return;
     }
 
+    // // // 距离目标比较近
+    // if (dis < 3) {
+    //     if (fabs(dir_bias) > PI / 2) {
+    //         instruct.push_back({0, -2});
+    //         return;
+    //     }
+
+    //     if (fabs(dir_bias) > PI * 3) {
+    //         instruct.push_back({0, 2});
+    //         return;
+    //     }
+
+    //     instruct.push_back({0, 4});
+    //     return;
+    // }
+
+
+    // 距离目标比较远
     if (dis >= 3) {
-        if (fabs(dir_bias > PI)) {
-            instruct.push_back({0, -1});
-        } else if (fabs(dir_bias) > PI / 2) {
-            instruct.push_back({0, 4});
-        }  else {
+        if (fabs(dir_bias) < PI / 4) {
+            instruct.push_back({0, 6});
+            return;
+        }
+
+        if (fabs(dir_bias) < PI / 3) {
             instruct.push_back({0, 6});
         }
+
+        if (fabs(dir_bias) < PI / 2) {
+            instruct.push_back({0, 6});
+            return;
+        }
+
+        instruct.push_back({0, -2});
         return;
     }
 }
@@ -221,7 +272,7 @@ void Robot::move_to_target() {
 
 
 void Robot::buy() {
-    if (frameID > 8500) {
+    if (frameID > 8700) {
         return;
     }
 
