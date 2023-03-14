@@ -80,7 +80,7 @@ void Robot::perform_mission() {
     if (target_pos().x != -1) {
 
         // 到达买入处并且他有商品，就尝试购买
-        if (cal_distance(mission.des_buy->pos(), pos()) < 0.2
+        if (cal_distance(mission.des_buy->pos(), pos()) < 0.4
             and mission.des_buy->have_product()
             and type() == 0) {
 
@@ -93,7 +93,7 @@ void Robot::perform_mission() {
         // 判断购买成功
         if (mission.flg_buy == 1
             and type() > 0
-            and cal_distance(mission.des_buy->pos(), pos()) < 0.2) {
+            and cal_distance(mission.des_buy->pos(), pos()) < 0.4) {
 
             mission.des_buy->cancel_reserve_product(); // 取消买入地的产品预定
             change_target({-1, -1}); // 修改 target_position
@@ -103,7 +103,7 @@ void Robot::perform_mission() {
 
         // 到达卖出处并且他有空余原料格
         if (!mission.flg_sell
-            and cal_distance(mission.des_sell->pos(), pos()) < 0.2
+            and cal_distance(mission.des_sell->pos(), pos()) < 0.4
             and mission.des_sell->find_material(mission.des_buy->type()) == 0
             and type() > 0) {
 
@@ -116,7 +116,7 @@ void Robot::perform_mission() {
 
         if (mission.flg_sell == 1
             and type() == 0
-            and cal_distance(mission.des_sell->pos(), pos()) < 0.2) {
+            and cal_distance(mission.des_sell->pos(), pos()) < 0.4) {
 
             mission.des_sell->cancel_reserve_material(t); // 取消卖出地的原料预定
             change_target({-1, -1});
@@ -189,24 +189,24 @@ void Robot::move_to_target() {
     }
     instruct.push_back({1, -6 * dir_bias});
 
-    if (dis < 1) {
+    if (dis < 3) {
         if (fabs(dir_bias) > PI / 2) {
             instruct.push_back({0, -1});
         } else if (fabs(dir_bias) > PI / 4) {
             instruct.push_back({0, 3});
         } else {
-            instruct.push_back({0, 4});
+            instruct.push_back({0, 6});
         }
 
         return;
     }
 
-    if (dis >= 1) {
-        if (fabs(dir_bias) > PI / 2) {
+    if (dis >= 3) {
+        if (fabs(dir_bias > PI)) {
             instruct.push_back({0, -1});
-        } else if (fabs(dir_bias) > PI / 4) {
-            instruct.push_back({0, 5});
-        } else {
+        } else if (fabs(dir_bias) > PI / 2) {
+            instruct.push_back({0, 4});
+        }  else {
             instruct.push_back({0, 6});
         }
         return;

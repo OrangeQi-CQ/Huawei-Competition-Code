@@ -49,7 +49,7 @@ void Game::read_frame() {
 
 
 
-
+#if 0
 bool Game::set_robot(int id, vector<int> type_buy,
                      vector<int> type_sell) {
 
@@ -135,12 +135,37 @@ bool Game::set_robot(int id, vector<int> type_buy,
     return true;
 
 }
+#endif
 
 
+
+// void Game::avoid_colision() {
+//     for (int i = 0; i < 4; i++) {
+//         for (int j = 0; j < 4; j++) {
+//             if (cal_distance(robot[i].pos(), robot[j].pos() > 3)) {
+//                 continue;
+//             }
+
+//             Direction v1 = robot[i].direction, v2 = robot[j].direction;
+//             Direction dv = v1 - v2;
+//             if (dv > PI) {
+//                 dv -= 2 * PI;
+//             }
+//             if (dv < -PI) {
+//                 dv += 2 * PI;
+//             }
+
+            
+//         }
+//     }
+
+// }
+
+#if 1
 void Game::avoid_colision() {
     for (int i = 0; i < 4; i++) {
         for (int j = i + 1; j < 4; j++) {
-            if (cal_distance(robot[i].pos(), robot[j].pos()) < 1.2) {
+            if (cal_distance(robot[i].pos(), robot[j].pos()) < 2.5) {
 
                 double cc = (rand() % 50) / 100 + 0.5;
                 cc = 1;
@@ -152,6 +177,7 @@ void Game::avoid_colision() {
                 while (ii > PI) {
                     ii -= PI * 2;
                 }
+
                 Instruct tt = {1, ii * cc};
                 robot[i].instruct.push_back(tt);
                 tt = {0, 6};
@@ -175,6 +201,7 @@ void Game::avoid_colision() {
         }
     }
 }
+#endif
 
 
 
