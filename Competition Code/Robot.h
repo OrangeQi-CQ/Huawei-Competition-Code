@@ -55,6 +55,7 @@ class Robot {
 public:
 
     friend class Game;
+    friend class TaskManager;
 
     /**
      * 功能：在当前帧中读入该机器人的参数

@@ -12,6 +12,8 @@
 class Workbench {
 public:
 
+    friend class TaskManager;
+
     /**
      * 参数：当前帧的 ID
      * 作用：读取某一个工作帧的状态
@@ -84,6 +86,14 @@ public:
     */
     int ID();
 
+    /**
+     * 功能：查询这个工作台还需要多久能有产品
+     * -1 是因为缺乏原料而被阻塞
+     * 0 是已经有产品格
+     * 其他是已经有产品了
+    */
+    double waiting_time();
+
 
 private:
     /**
@@ -117,6 +127,9 @@ private:
 
     // 这个工作台生产商品需要的原料
     std::set<int> req_material;
+
+    // 这个工作台所需要的全部产品类型
+    std::set<int> tot_material;
 
     // 这个工作台已经拥有的原料
     std::set<int> now_material;

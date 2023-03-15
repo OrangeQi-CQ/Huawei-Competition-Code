@@ -79,7 +79,7 @@ void Robot::perform_mission() {
     // 如果它已经有目的地了
     if (target_pos().x != -1) {
 
-        // 到达买入处并且他有商品，就尝试购买
+        // 到达买入处，他有商品，就尝试购买
         if (cal_distance(mission.des_buy->pos(), pos()) < 0.4
             and mission.des_buy->have_product()
             and type() == 0) {
@@ -114,6 +114,7 @@ void Robot::perform_mission() {
 
         }
 
+        // 判断售卖成功
         if (mission.flg_sell == 1
             and type() == 0
             and cal_distance(mission.des_sell->pos(), pos()) < 0.4) {
@@ -194,10 +195,10 @@ void Robot::move_to_target() {
      * 第一步：决定角速度大小和方向
     */
     int sig = dir_bias > 0 ? 1 : -1;
-    if (fabs(dir_bias) >= PI / 6) {
+    if (fabs(dir_bias) >= PI / 20) {
         instruct.push_back({1, -1.0 * sig * PI});
     }
-    instruct.push_back({1, -6 * dir_bias});
+    instruct.push_back({1, -20 * dir_bias});
 
 
     /**
@@ -205,7 +206,7 @@ void Robot::move_to_target() {
     */
 
     // 距离目标超级近
-    if (dis < 3) {
+    if (dis < 1) {
         if (fabs(dir_bias) > PI / 2) {
             if (dis > 0.3) {
                 instruct.push_back({0, -2});
@@ -213,11 +214,12 @@ void Robot::move_to_target() {
             return;
         }
 
-        if (fabs(dir_bias) > PI / 4) {
+
+        if (fabs(dir_bias) > PI / 6) {
             if (dis < 0.4) {
-                instruct.push_back({0, 6});
+                instruct.push_back({0, 2});
             } else {
-                instruct.push_back({0, 6});
+                instruct.push_back({0, 1});
             }
             return;
         }
@@ -226,21 +228,26 @@ void Robot::move_to_target() {
         return;
     }
 
-    // // // 距离目标比较近
-    // if (dis < 3) {
-    //     if (fabs(dir_bias) > PI / 2) {
-    //         instruct.push_back({0, -2});
-    //         return;
-    //     }
+    // // 距离目标比较近
+    if (dis < 3) {
+        if (fabs(dir_bias) > PI / 2) {
+            instruct.push_back({0, -1});
+            return;
+        }
 
-    //     if (fabs(dir_bias) > PI * 3) {
-    //         instruct.push_back({0, 2});
-    //         return;
-    //     }
+        if (fabs(dir_bias) > PI * 3) {
+            instruct.push_back({0, 2});
+            return;
+        }
 
-    //     instruct.push_back({0, 4});
-    //     return;
-    // }
+        if (fabs(dir_bias) > PI / 6) {
+            instruct.push_back({0, 3});
+            return;
+        }
+
+        instruct.push_back({0, 6});
+        return;
+    }
 
 
     // 距离目标比较远
@@ -251,15 +258,15 @@ void Robot::move_to_target() {
         }
 
         if (fabs(dir_bias) < PI / 3) {
-            instruct.push_back({0, 6});
+            instruct.push_back({0, 4});
         }
 
         if (fabs(dir_bias) < PI / 2) {
-            instruct.push_back({0, 6});
+            instruct.push_back({0, 2});
             return;
         }
 
-        instruct.push_back({0, -2});
+        instruct.push_back({0, -1});
         return;
     }
 }
@@ -272,7 +279,9 @@ void Robot::move_to_target() {
 
 
 void Robot::buy() {
-    if (frameID > 8700) {
+    double dis = cal_distance(position, mission.des_buy->pos()) + cal_distance(mission.des_buy->pos(), mission.des_sell->pos());
+
+    if (dis / 5 + 3 > (9000 - frameID) / 50) {
         return;
     }
 

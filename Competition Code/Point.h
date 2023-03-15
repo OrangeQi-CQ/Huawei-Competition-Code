@@ -8,7 +8,7 @@
 
 
 typedef double angle;
-const int PI = acos(-1);
+const double PI = acos(-1);
 
 
 // 结构体：平面上的点

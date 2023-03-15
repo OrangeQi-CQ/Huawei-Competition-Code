@@ -9,8 +9,7 @@ public:
     Workbench *workbench_buy;
     Workbench *workbench_sell;
 
-    double dis;
-    double profit;
+    std::vector<double> cost_performance;
 
 };
 
@@ -37,9 +36,7 @@ public:
     /**
      * 每一帧当中初始化所有可行的任务
     */
-    void init_tasks(Workbench workbench[]);
-
-
+    void init_tasks(Workbench workbench[], Robot robot[]);
 
 
 } ;

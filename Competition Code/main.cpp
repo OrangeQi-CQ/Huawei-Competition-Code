@@ -18,7 +18,7 @@ Game game;
 
 
 int main() {
-    // freopen("1.txt", "r", stdin);
+    // freopen("input.txt", "r", stdin);
     // freopen("output test.txt", "w", stdout);
 
     game.lets_work();

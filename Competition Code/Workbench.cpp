@@ -15,16 +15,32 @@ void Workbench::read(int id) {
 
     scanf("%d", &workbench_type);
     scanf("%lf%lf", &position.x, &position.y);
-
-
     scanf("%d", &remaining_prodution_frame);
 
     int material_state;
     scanf("%d", &material_state);
-
-
+    if (!tot_material.size()) {
+        switch (workbenchID) {
+            case 4:
+                tot_material = {1, 2};
+                break;
+            case 5:
+                tot_material = {1, 3};
+                break;
+            case 6:
+                tot_material = {2, 3};
+                break;
+            case 7:
+                tot_material = {4, 5, 6};
+                break;
+            case 8:
+                tot_material = {7};
+                break;
+            default:
+                break;
+        }
+    }
     now_material.clear();
-
     for (int i = 1; i <= 9; i++) {
         if (material_state & (1 << i)) {
             now_material.insert(i);
@@ -32,11 +48,6 @@ void Workbench::read(int id) {
     }
 
     scanf("%d", &Have_product);
-
-//     if (Have_product) {
-//         object.material[type()].on_sale.insert(workbenchID);
-//     }
-// }
 }
 
 
@@ -99,3 +110,7 @@ bool Workbench::have_product() {
     return Have_product;
 }
 
+
+double Workbench::waiting_time() {
+    return 1.0 * remaining_prodution_frame / 50;
+}
