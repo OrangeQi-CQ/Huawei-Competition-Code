@@ -13,17 +13,22 @@ double TaskManager::cal_profit(int material_type) {
 
 void TaskManager::init_tasks(Workbench workbench[], Robot robot[]) {
 
+    bool has_workbench7 = 0;
+
     /**
      * 计算 4,5,6 三种物品的优先级
     */
 
     std::fill(material_priority + 1, material_priority + 8, 1);
+    // material_priority = {}
     material_priority[7] = 100;
 
     int tot_lack = 0;
 
     for (int i = 1; i <= num_workbench; i++) {
         if (workbench[i].type() == 7) {
+            has_workbench7 = 1;
+
             for (int x : workbench[i].lack_material) {
                 material_priority[x] +=  10;
             }
@@ -131,9 +136,11 @@ void TaskManager::init_tasks(Workbench workbench[], Robot robot[]) {
                               material_priority[workbench[i].type()];
 
 
-                // 除非 i 的类型是 7，否则不鼓励送到 9 号工作台
-                if (workbench[j].type() == 9 and workbench[i].type() != 7) {
-                    prof *= 0.05;
+                // 一般情况下不鼓励送到 9 号工作台
+                if (workbench[j].type() == 9) {
+                    if (workbench[i].type() != 7 and has_workbench7) {
+                        prof *= 0.05;
+                    }
                 }
 
 
