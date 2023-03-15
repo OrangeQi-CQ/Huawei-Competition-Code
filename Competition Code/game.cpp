@@ -43,9 +43,9 @@ void Game::avoid_wall() {
         if (robot[i].pos().x < 1 and robot[i].li_speed.x < -2
             or robot[i].pos().x > 49 and robot[i].li_speed.x > 2
             or robot[i].pos().y < 1 and robot[i].li_speed.y < -2
-            or robot[i].pos().y > 49 and robot[i].li_speed.y > 2){
-                robot[i].instruct.push_back({0, 1});
-            }
+            or robot[i].pos().y > 49 and robot[i].li_speed.y > 2) {
+            robot[i].instruct.push_back({0, 1});
+        }
 
     }
 }
@@ -97,9 +97,9 @@ void Game::avoid_colision() {
 
                 // 根据距离决定转向幅度
                 if (dis < 3) {
-                    tt *= 0.8;
+                    tt *= 1.0;
                 } else {
-                    tt *= 0.3;
+                    tt *= 0.5;
 
                 }
 
@@ -154,7 +154,7 @@ void Game::avoid_colision() {
                 ii = PI * ii * (1 / abs(ii)) * 0.99;
 
                 Instruct tt = {1, ii *cc * 0.6};
-                robot[i].instruct.push_back(tt);
+
 
                 cc = (rand() % 50) / 100 + 0.5;
                 cc = 1;

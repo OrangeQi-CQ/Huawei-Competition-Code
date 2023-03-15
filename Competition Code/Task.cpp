@@ -40,7 +40,6 @@ void TaskManager::init_tasks(Workbench workbench[], Robot robot[]) {
     material_priority[3] += (material_priority[5] + material_priority[6]) / 2;
 
 
-
     /**
      * 计算所有可能的任务的性价比
     */
@@ -134,6 +133,11 @@ void TaskManager::init_tasks(Workbench workbench[], Robot robot[]) {
 
                 double prof = cal_profit(workbench[i].type()) *
                               material_priority[workbench[i].type()];
+                
+
+                // if (workbench[i].type() > 3) {
+                //     prof *= 10;
+                // }
 
 
                 // 一般情况下不鼓励送到 9 号工作台
