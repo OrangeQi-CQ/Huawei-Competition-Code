@@ -13,6 +13,7 @@ class Workbench {
 public:
 
     friend class TaskManager;
+    friend class Game;
 
     /**
      * 参数：当前帧的 ID
@@ -133,6 +134,9 @@ private:
 
     // 这个工作台已经拥有的原料
     std::set<int> now_material;
+
+    // 这个工作台缺少的原料
+    std::set<int> lack_material;
 
     /**
      * 记录这个原料格是否已经被预定

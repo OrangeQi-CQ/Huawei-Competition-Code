@@ -13,6 +13,33 @@ double TaskManager::cal_profit(int material_type) {
 
 void TaskManager::init_tasks(Workbench workbench[], Robot robot[]) {
 
+    /**
+     * 计算 4,5,6 三种物品的优先级
+    */
+
+    std::fill(material_priority + 1, material_priority + 8, 1);
+    material_priority[7] = 100;
+
+    int tot_lack = 0;
+
+    for (int i = 1; i <= num_workbench; i++) {
+        if (workbench[i].type() == 7) {
+            for (int x : workbench[i].lack_material) {
+                material_priority[x] +=  10;
+            }
+        }
+    }
+
+    material_priority[1] += (material_priority[4] + material_priority[5]) / 2;
+    material_priority[2] += (material_priority[4] + material_priority[6]) / 2;
+    material_priority[3] += (material_priority[5] + material_priority[6]) / 2;
+
+
+
+    /**
+     * 计算所有可能的任务的性价比
+    */
+
     tasks.clear();
 
     for (int i = 1; i <= num_workbench; i++) {
@@ -20,7 +47,7 @@ void TaskManager::init_tasks(Workbench workbench[], Robot robot[]) {
         // 他生产过程被阻塞，或者等待时间大于 5 秒
         if (!workbench[i].have_product() and
             (workbench[i].waiting_time() < 0
-             or workbench[i].waiting_time() > 3)) {
+             or workbench[i].waiting_time() > 5)) {
             continue;
         }
 
@@ -100,15 +127,15 @@ void TaskManager::init_tasks(Workbench workbench[], Robot robot[]) {
                     continue;
                 }
 
-                double prof = cal_profit(workbench[i].type());
+                double prof = cal_profit(workbench[i].type()) *
+                              material_priority[workbench[i].type()];
 
-                // 尽可能前往已经有一部分原料的工作台，帮助他更快合成商品
-                if (!workbench[j].waiting_time() < 0
-                    and workbench[j].now_material.size() + workbench[j].material_is_reserved.count()
-                    < workbench[j].tot_material.size()) {
-                    prof *= (1 + workbench[j].now_material.size() +
-                             workbench[j].material_is_reserved.count());
+
+                // 除非 i 的类型是 7，否则不鼓励送到 9 号工作台
+                if (workbench[j].type() == 9 and workbench[i].type() != 7) {
+                    prof *= 0.05;
                 }
+
 
                 double time = cal_distance(workbench[i].pos(), workbench[j].pos()) / 6
                               + std::max(cal_distance(workbench[i].pos(), robot[id].pos()) / 6,

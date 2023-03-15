@@ -23,6 +23,11 @@ public:
     bool set_robot(int id, std::vector<int> _buy, std::vector<int> _sell);
 
     /**
+     * 避免撞墙
+    */
+    void avoid_wall();
+
+    /**
      * 避免碰撞
     */
     void avoid_colision();

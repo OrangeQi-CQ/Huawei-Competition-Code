@@ -24,6 +24,7 @@ public:
     double buy_price[10] = {1e9, 3000, 4400, 5800, 15400, 17200, 19200, 76000};
     double sell_price[10] = {0, 6000, 7600, 9200, 22500, 25000, 27500, 105000};
 
+    double material_priority[10];
 
 
     /**

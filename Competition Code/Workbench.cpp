@@ -41,9 +41,16 @@ void Workbench::read(int id) {
         }
     }
     now_material.clear();
+    lack_material.clear();
     for (int i = 1; i <= 9; i++) {
         if (material_state & (1 << i)) {
             now_material.insert(i);
+        }
+    }
+
+    for (int t : tot_material) {
+        if (now_material.find(t) == now_material.end()) {
+            lack_material.insert(t);
         }
     }
 

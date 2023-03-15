@@ -207,29 +207,28 @@ void Robot::move_to_target() {
 
     // 距离目标超级近
     if (dis < 1) {
+        if (dis < 0.3) {
+            instruct.push_back({0, 1});
+            return;
+        }
+
         if (fabs(dir_bias) > PI / 2) {
-            if (dis > 0.3) {
-                instruct.push_back({0, -2});
-            }
+            instruct.push_back({0, -2});
             return;
         }
 
 
         if (fabs(dir_bias) > PI / 6) {
-            if (dis < 0.4) {
-                instruct.push_back({0, 2});
-            } else {
-                instruct.push_back({0, 1});
-            }
+            instruct.push_back({0, 1});
             return;
         }
 
-        instruct.push_back({0, 6});
+        instruct.push_back({0, 4});
         return;
     }
 
     // // 距离目标比较近
-    if (dis < 3) {
+    if (dis < 4) {
         if (fabs(dir_bias) > PI / 2) {
             instruct.push_back({0, -1});
             return;
@@ -251,23 +250,12 @@ void Robot::move_to_target() {
 
 
     // 距离目标比较远
-    if (dis >= 3) {
-        if (fabs(dir_bias) < PI / 4) {
+    if (dis >= 4) {
+        if (fabs(dir_bias) < PI / 2) {
             instruct.push_back({0, 6});
             return;
         }
 
-        if (fabs(dir_bias) < PI / 3) {
-            instruct.push_back({0, 4});
-        }
-
-        if (fabs(dir_bias) < PI / 2) {
-            instruct.push_back({0, 2});
-            return;
-        }
-
-        instruct.push_back({0, -1});
-        return;
     }
 }
 
@@ -279,9 +267,11 @@ void Robot::move_to_target() {
 
 
 void Robot::buy() {
-    double dis = cal_distance(position, mission.des_buy->pos()) + cal_distance(mission.des_buy->pos(), mission.des_sell->pos());
+    double dis = cal_distance(position,
+                              mission.des_buy->pos()) + cal_distance(mission.des_buy->pos(),
+                                      mission.des_sell->pos());
 
-    if (dis / 5 + 3 > (9000 - frameID) / 50) {
+    if (dis / 4 + 2 > (9000 - frameID) / 50) {
         return;
     }
 
