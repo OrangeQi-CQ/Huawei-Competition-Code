@@ -227,8 +227,8 @@ void Robot::move_to_target() {
         return;
     }
 
-    // // 距离目标比较近
-    if (dis < 4) {
+    // 距离目标比较近
+    if (dis < 3) {
         if (fabs(dir_bias) > PI / 2) {
             instruct.push_back({0, -1});
             return;
@@ -250,12 +250,13 @@ void Robot::move_to_target() {
 
 
     // 距离目标比较远
-    if (dis >= 4) {
+    if (dis >= 3) {
         if (fabs(dir_bias) < PI / 2) {
             instruct.push_back({0, 6});
             return;
         }
 
+        instruct.push_back({0, 2});
     }
 }
 
