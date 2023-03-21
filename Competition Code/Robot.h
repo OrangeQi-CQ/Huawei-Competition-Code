@@ -107,7 +107,7 @@ public:
     /**
      * 功能：输出 卖出 的指令到 instruct 中
     */
-    void buy();
+    bool buy();
 
 
     /**

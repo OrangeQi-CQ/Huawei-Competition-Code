@@ -10,7 +10,7 @@
 #include <iostream>
 
 /*
-g++ *.cpp -o D:\ccc\hw3\a\WindowsRelease\Demo\SimpleDemo.exe
+g++ *.cpp -o D:\ccc\hw5\WindowsRelease\Demo\SimpleDemo.exe
 */
 
 

@@ -85,7 +85,7 @@ void Robot::perform_mission() {
             and type() == 0) {
 
 
-            buy(); // 生成指令到 instruct
+            if(buy()) // 生成指令到 instruct
             mission.flg_buy = 1; // 标志已经发出购买指令
             return;
         }
@@ -159,8 +159,8 @@ void Robot::finish_mission() {
 
     // 一系列清空。
     // 特别注意产品预定标志在结束购买或出售的时候就已经修改过了
-    mission.des_buy->cancel_reserve_product();
-    mission.des_sell->cancel_reserve_material(mission.des_buy->type());
+    //mission.des_buy->cancel_reserve_product();
+    //mission.des_sell->cancel_reserve_material(mission.des_buy->type());
     mission = {NULL, 0, NULL, 0};
     change_target({-1, -1});
     Has_mission = 0;
@@ -234,7 +234,7 @@ void Robot::move_to_target() {
             return;
         }
 
-        if (fabs(dir_bias) > PI * 3) {
+        if (fabs(dir_bias) > PI / 3) {
             instruct.push_back({0, 2});
             return;
         }
@@ -267,16 +267,17 @@ void Robot::move_to_target() {
 
 
 
-void Robot::buy() {
+bool Robot::buy() {
     double dis = cal_distance(position,
                               mission.des_buy->pos()) + cal_distance(mission.des_buy->pos(),
                                       mission.des_sell->pos());
 
     if (dis / 4 + 2 > (9000 - frameID) / 50) {
-        return;
+        return false;
     }
 
     instruct.push_back({2});
+    return true;
 }
 
 void Robot::sell() {

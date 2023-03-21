@@ -21,7 +21,7 @@ void TaskManager::init_tasks(Workbench workbench[], Robot robot[]) {
 
     std::fill(material_priority + 1, material_priority + 8, 1);
     // material_priority = {}
-    material_priority[7] = 100;
+    material_priority[7] = 1;
 
     int tot_lack = 0;
 
@@ -30,14 +30,18 @@ void TaskManager::init_tasks(Workbench workbench[], Robot robot[]) {
             has_workbench7 = 1;
 
             for (int x : workbench[i].lack_material) {
-                material_priority[x] +=  10;
+                material_priority[x] +=  material_priority[7]/4;
             }
         }
     }
 
-    material_priority[1] += (material_priority[4] + material_priority[5]) / 2;
-    material_priority[2] += (material_priority[4] + material_priority[6]) / 2;
-    material_priority[3] += (material_priority[5] + material_priority[6]) / 2;
+    material_priority[1] = (material_priority[4] + material_priority[5]) / 3;
+    material_priority[2] = (material_priority[4] + material_priority[6]) / 3;
+    material_priority[3] = (material_priority[5] + material_priority[6]) / 3;
+
+    //material_priority[1] += (material_priority[4] + material_priority[5]) / 2;
+    //material_priority[2] += (material_priority[4] + material_priority[6]) / 2;
+    //material_priority[3] += (material_priority[5] + material_priority[6]) / 2;
 
 
     /**

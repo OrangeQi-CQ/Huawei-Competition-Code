@@ -153,7 +153,7 @@ void Game::avoid_colision() {
 
                 ii = PI * ii * (1 / abs(ii)) * 0.99;
 
-                Instruct tt = {1, ii *cc * 0.6};
+                Instruct tt = {1, ii *cc * 0.8};
 
 
                 cc = (rand() % 50) / 100 + 0.5;
@@ -169,7 +169,7 @@ void Game::avoid_colision() {
 
                 ii = PI * ii * (1 / abs(ii)) * 0.99;
 
-                tt = {1, ii *cc * 0.6};
+                tt = {1, ii *cc * 0.8};
                 robot[j].instruct.push_back(tt);
                 //robot[i].instruct.push_back({0,1});
             }
@@ -205,8 +205,8 @@ void Game::calculate_frame() {
             double now_score = task.cost_performance[i];
 
             if (task.workbench_sell->type() == 7) {
-                now_score *= (1 + task.workbench_sell->now_material.size()
-                              + task.workbench_sell->material_is_reserved.count());
+                now_score *= (3 + task.workbench_sell->now_material.size()
+                              + task.workbench_sell->material_is_reserved.count())/3;
             }
 
             if (now_score > max_score) {
