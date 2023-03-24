@@ -9,13 +9,7 @@
 #include <iostream>
 
 
-void GameMap::read_map() {
-    for (int i = 1; i <= 100; i++) {
-        scanf("%s", game_map[i] + 1);
-    }
+// void GameMap::read_map(Workbench workbench[]) {
 
-    scanf("%s", templine);
-    puts("OK");
-    fflush(stdout);
-} 
+// } 
 

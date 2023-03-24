@@ -14,14 +14,6 @@
 
 class Game {
 public:
-
-    /**
-     * 参数：机器人ID，希望他在 from 类工作台购买，去 to 类工作台售卖
-     *       如果他正在路上，就维持他原本的计划
-     * 作用：设定机器人的调度
-    */
-    bool set_robot(int id, std::vector<int> _buy, std::vector<int> _sell);
-
     /**
      * 避免撞墙
     */
@@ -53,10 +45,10 @@ private:
      * 用来读取时的一些问题
     */
 
-   Workbench workbench[55];
-   Robot robot[4];
-   GameMap Map;
-   TaskManager taskmanager;
-   char templine[1024];
+    Workbench workbench[55];
+    Robot robot[4];
+    GameMap Map;
+    TaskManager taskmanager;
+    char templine[1024];
 
 };

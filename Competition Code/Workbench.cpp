@@ -14,13 +14,14 @@ void Workbench::read(int id) {
     workbenchID = id;
 
     scanf("%d", &workbench_type);
+
     scanf("%lf%lf", &position.x, &position.y);
     scanf("%d", &remaining_prodution_frame);
 
     int material_state;
     scanf("%d", &material_state);
     if (!tot_material.size()) {
-        switch (workbenchID) {
+        switch (workbench_type) {
             case 4:
                 tot_material = {1, 2};
                 break;
@@ -47,7 +48,6 @@ void Workbench::read(int id) {
             now_material.insert(i);
         }
     }
-
     for (int t : tot_material) {
         if (now_material.find(t) == now_material.end()) {
             lack_material.insert(t);
@@ -91,8 +91,7 @@ void Workbench::cancel_reserve_product() {
 
 
 /*************************************************************/
-
-
+// 用于查询的函数
 
 
 int Workbench::ID() {

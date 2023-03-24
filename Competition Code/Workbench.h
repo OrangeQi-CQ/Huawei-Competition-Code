@@ -7,6 +7,7 @@
 
 #include <set>
 #include <bitset>
+#include <queue>
 
 
 class Workbench {
@@ -14,6 +15,9 @@ public:
 
     friend class TaskManager;
     friend class Game;
+    friend class Map;
+
+    // GameMap *gamemap;
 
     /**
      * 参数：当前帧的 ID
@@ -96,6 +100,9 @@ public:
     double waiting_time();
 
 
+    int robotlock;
+
+
 private:
     /**
      * 变量含义：
@@ -147,5 +154,31 @@ private:
      * 记录这个产品格是否已经被预定
     */
     bool product_is_reserved;
+
+
+
+// 以下是用于图论建模的一些特征值
+
+
+
+    /**
+     * 用于图论建模的一个关键值
+    */
+    double weight = 1e7;
+
+    /**
+     * 每一种原料的倾向产地集合
+    */
+    std::set<int> source[10];
+
+    /**
+     * 记录每一种原料的所有倾向产地里面重量最小的
+    */
+    double min_weight[10];
+
+    /**
+     * 他产品的的倾向目的地集合
+    */
+    std::set<int> target;
 };
 

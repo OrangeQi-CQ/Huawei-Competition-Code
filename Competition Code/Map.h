@@ -1,18 +1,26 @@
 #pragma once
+#include <set>
 
-
-
-#include "Map.h"
-
+// #include "Workbench.h"
 
 
 
 class GameMap {
 public:
-    void read_map();
+    // friend class Robot;
+    // friend class TaskManager;
+    // friend class Workbench;
+
+    /**
+     * 读入地图
+    */
+    // void read_map(Workbench workbench[]);
 
 
-private:
+
+
+
+
     char game_map[105][105];
     char templine[1024];
 };

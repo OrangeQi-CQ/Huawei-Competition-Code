@@ -52,29 +52,24 @@ void Robot::print_instruct(int ID) {
 
 
 
-void Robot::set_mission(Workbench *workbench_buy, Workbench *workbench_sell) {
-    if (Has_mission == 1) { // 如果本来就有一个任务，就继续执行
-        // finish_mission();
-        perform_mission();
-    }
-
+void Robot::add_mission(Workbench *workbench_buy, Workbench *workbench_sell) {
     // 进行一系列初始化
-    Has_mission = 1;
-    mission = {workbench_buy, 0, workbench_sell, 0};
+    workbench_sell->robotlock = ID();
+
     workbench_buy->reserve_product();
     workbench_sell->reserve_material(workbench_buy->type());
+    Mission mis = {workbench_buy, 0, workbench_sell, 0};
+    missions.push_back(mis);
 }
 
 
 
 void Robot::perform_mission() {
-
-    if (has_mission() == 0) {
+    if (!has_mission()) {
         return; // 理论上不会发生
     }
 
-    int t = mission.des_buy->type();
-
+    Mission &mission = missions.front();
 
     // 如果它已经有目的地了
     if (target_pos().x != -1) {
@@ -85,7 +80,7 @@ void Robot::perform_mission() {
             and type() == 0) {
 
 
-            if(buy()) // 生成指令到 instruct
+            buy(); // 生成指令到 instruct
             mission.flg_buy = 1; // 标志已经发出购买指令
             return;
         }
@@ -119,7 +114,11 @@ void Robot::perform_mission() {
             and type() == 0
             and cal_distance(mission.des_sell->pos(), pos()) < 0.4) {
 
-            mission.des_sell->cancel_reserve_material(t); // 取消卖出地的原料预定
+            // // 代表 des_sell 类型的产品已经开始生产了
+            tot_material[mission.des_sell->type()]++;
+
+            mission.des_sell->cancel_reserve_material(
+                            mission.des_buy->type()); // 取消卖出地的原料预定
             change_target({-1, -1});
             return;
         }
@@ -152,18 +151,11 @@ void Robot::perform_mission() {
 
 
 void Robot::finish_mission() {
-    if (type()) {
-        // 理论上不会发生
-        // destroy();
-    }
+    missions.front().des_sell->robotlock = 0;
 
-    // 一系列清空。
-    // 特别注意产品预定标志在结束购买或出售的时候就已经修改过了
-    //mission.des_buy->cancel_reserve_product();
-    //mission.des_sell->cancel_reserve_material(mission.des_buy->type());
-    mission = {NULL, 0, NULL, 0};
+
+    missions.pop_front();
     change_target({-1, -1});
-    Has_mission = 0;
 }
 
 
@@ -267,21 +259,22 @@ void Robot::move_to_target() {
 
 
 
-bool Robot::buy() {
+void Robot::buy() {
+    Mission &mission = missions.front();
     double dis = cal_distance(position,
                               mission.des_buy->pos()) + cal_distance(mission.des_buy->pos(),
                                       mission.des_sell->pos());
 
     if (dis / 4 + 2 > (9000 - frameID) / 50) {
-        return false;
+        return;
     }
 
     instruct.push_back({2});
-    return true;
 }
 
 void Robot::sell() {
     instruct.push_back({3});
+
 }
 
 void Robot::destroy() {
@@ -313,10 +306,51 @@ Point Robot::target_pos() {
 }
 
 bool Robot::has_mission() {
-    return Has_mission;
+    return missions.size() > 0;
 }
 
 int Robot::workbench() {
     return workbench_type;
 }
 
+
+double Robot::time_to_free() {
+    int siz = missions.size();
+
+    if (siz == 0) {
+        return 0;
+    }
+
+    auto it = missions.begin();
+    double res = cal_distance(position, it->des_buy->pos())
+                 + cal_distance(it->des_buy->pos(), it->des_sell->pos());
+
+    auto last = it;
+    it++;
+    for (; it != missions.end(); it++) {
+        res += cal_distance(last->des_sell->pos(), it->des_buy->pos())
+               + cal_distance(it->des_buy->pos(), it->des_sell->pos());
+        last = it;
+    }
+
+    return res / 5 + siz;
+}
+
+
+
+
+
+Point Robot::corner_pos() {
+    Point c[4] = {{0.5, 0.5}, {0.5, 49.5}, {49.5, 0.5}, {49.5, 49.5}};
+    for (int i = 0; i < 4; i++) {
+        if (cal_distance(position, c[i]) < 5) {
+            return c[i];
+        }
+    }
+
+    return {25, 25};
+}
+
+double Robot::corner_dis() {
+    return cal_distance(position, corner_pos());
+}

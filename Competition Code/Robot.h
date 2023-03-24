@@ -5,6 +5,7 @@
 #include "state.h"
 
 #include <vector>
+#include <list>
 
 
 
@@ -57,6 +58,9 @@ public:
     friend class Game;
     friend class TaskManager;
 
+    // 游戏地图
+    // GameMap *gamemap;
+
     /**
      * 功能：在当前帧中读入该机器人的参数
     */
@@ -72,9 +76,9 @@ public:
 
     /**
      * 参数：两个工作台的指针
-     * 功能：设定一组任务：从 workbench_buy 那里买，卖到 workbench_sell 那里去
+     * 功能：添加一组任务：从 workbench_buy 那里买，卖到 workbench_sell 那里去
     */
-    void set_mission(Workbench *workbench_buy, Workbench *workbench_sell);
+    void add_mission(Workbench *workbench_buy, Workbench *workbench_sell);
 
 
     /**
@@ -107,7 +111,7 @@ public:
     /**
      * 功能：输出 卖出 的指令到 instruct 中
     */
-    bool buy();
+    void buy();
 
 
     /**
@@ -167,17 +171,30 @@ public:
 
 
 
+    /**
+     * 功能：返回这个机器人完成已有的所有指令剩余的时间
+    */
+    double time_to_free();
 
 
+    /**
+     * 功能：返回这个机器人所处在的墙角编号
+    */
+    Point corner_pos();
 
+
+    /**
+     * 功能：返回这个机器人距离他最近的墙角的距离
+    */
+    double corner_dis();
 
 private:
 
     // 当前机器人即将发出的指令集
     std::vector<Instruct> instruct;
 
-    // 这个机器人正在执行的任务
-    Mission mission;
+    // 这个机器人已经有的任务集合
+    std::list<Mission> missions;
 
 
     // 当前机器人编号，也就是 robot 的数组下标
@@ -216,8 +233,5 @@ private:
     // 记录这个机器人想要前往的工作台编号
     Point target_position = {-1, -1};
 
-
-    // 这个机器人是否在任务中
-    bool Has_mission = 0;
 
 };
