@@ -22,3 +22,6 @@ extern int tot_material[10];
 * 某种工作台的编号集合
 */
 extern std::set<int> wbtypes[10];
+
+
+int mapID();

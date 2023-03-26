@@ -17,7 +17,9 @@ public:
     /**
      * 避免撞墙
     */
-    void avoid_wall();
+    void avoid_wall23();
+    void avoid_wall1();
+    void avoid_wall4();
 
     /**
      * 避免碰撞

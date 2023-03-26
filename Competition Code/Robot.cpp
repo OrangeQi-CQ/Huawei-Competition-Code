@@ -19,7 +19,6 @@ void Robot::read(int ID) {
     scanf("%lf%lf", &li_speed.x, &li_speed.y);
     scanf("%lf", &direction);
     scanf("%lf%lf", &position.x, &position.y);
-
 }
 
 
@@ -56,8 +55,10 @@ void Robot::add_mission(Workbench *workbench_buy, Workbench *workbench_sell) {
     // 进行一系列初始化
     workbench_sell->robotlock = ID();
 
-    workbench_buy->reserve_product();
-    workbench_sell->reserve_material(workbench_buy->type());
+    if (workbench_sell->now_material.size() + workbench_sell->material_is_reserved.count() + 1== workbench_sell->tot_material.size()) {
+        tot_material[workbench_sell->type()]++;
+    }
+
     Mission mis = {workbench_buy, 0, workbench_sell, 0};
     missions.push_back(mis);
 }
@@ -114,8 +115,8 @@ void Robot::perform_mission() {
             and type() == 0
             and cal_distance(mission.des_sell->pos(), pos()) < 0.4) {
 
-            // // 代表 des_sell 类型的产品已经开始生产了
-            tot_material[mission.des_sell->type()]++;
+            // // // 代表 des_sell 类型的产品已经开始生产了
+            // tot_material[mission.des_sell->type()]++;
 
             mission.des_sell->cancel_reserve_material(
                             mission.des_buy->type()); // 取消卖出地的原料预定
@@ -200,7 +201,9 @@ void Robot::move_to_target() {
     // 距离目标超级近
     if (dis < 1) {
         if (dis < 0.3) {
-            instruct.push_back({0, 1});
+            if(mapID()==2||mapID()==3)
+            instruct.push_back({0, -1});
+            else instruct.push_back({0, 1});
             return;
         }
 
@@ -211,7 +214,7 @@ void Robot::move_to_target() {
 
 
         if (fabs(dir_bias) > PI / 6) {
-            instruct.push_back({0, 1});
+            instruct.push_back({0, 1.5});
             return;
         }
 
@@ -222,17 +225,24 @@ void Robot::move_to_target() {
     // 距离目标比较近
     if (dis < 3) {
         if (fabs(dir_bias) > PI / 2) {
-            instruct.push_back({0, -1});
+            if(mapID()==1)
+            instruct.push_back({0, -0.5});
+            else  instruct.push_back({0, -1});
             return;
         }
 
         if (fabs(dir_bias) > PI / 3) {
-            instruct.push_back({0, 2});
+            instruct.push_back({0, 2.3});
             return;
         }
 
         if (fabs(dir_bias) > PI / 6) {
-            instruct.push_back({0, 3});
+            if (mapID() == 2 or mapID() == 3) {
+                instruct.push_back({0, 5});
+            } else
+            if(mapID()==1)
+                instruct.push_back({0, 3.3});
+            else instruct.push_back({0, 3});
             return;
         }
 
@@ -248,7 +258,11 @@ void Robot::move_to_target() {
             return;
         }
 
-        instruct.push_back({0, 2});
+
+        if (mapID() == 2 or mapID() == 3) {
+            instruct.push_back({0, 3});
+        } else
+            instruct.push_back({0, 2});
     }
 }
 
@@ -265,7 +279,9 @@ void Robot::buy() {
                               mission.des_buy->pos()) + cal_distance(mission.des_buy->pos(),
                                       mission.des_sell->pos());
 
-    if (dis / 4 + 2 > (9000 - frameID) / 50) {
+    if (dis / 6 + 1 > (9000 - frameID) / 50) {
+        target_position = {50 - pos().x, 50 - pos().y};
+        move_to_target();
         return;
     }
 
@@ -341,16 +357,21 @@ double Robot::time_to_free() {
 
 
 Point Robot::corner_pos() {
-    Point c[4] = {{0.5, 0.5}, {0.5, 49.5}, {49.5, 0.5}, {49.5, 49.5}};
-    for (int i = 0; i < 4; i++) {
+    Point c[9] = {{0.5, 0.5}, {0.5, 49.5}, {49.5, 0.5}, {49.5, 49.5}, {25, 50}, {25, 0}, {0, 25}, {50, 25}};
+    int t = 4;
+    if (mapID() == 1 or mapID() == 2) {
+        t = 8;
+    }
+    for (int i = 0; i < t; i++) {
         if (cal_distance(position, c[i]) < 5) {
             return c[i];
         }
     }
 
-    return {25, 25};
+    return {-1, -1};
 }
 
 double Robot::corner_dis() {
     return cal_distance(position, corner_pos());
 }
+

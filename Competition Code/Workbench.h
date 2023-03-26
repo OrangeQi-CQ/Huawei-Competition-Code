@@ -16,6 +16,7 @@ public:
     friend class TaskManager;
     friend class Game;
     friend class Map;
+    friend class Robot;
 
     // GameMap *gamemap;
 

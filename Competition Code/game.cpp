@@ -39,112 +39,166 @@ void Game::read_frame() {
 /*******************************************************************/
 
 
-void Game::avoid_wall() {
+void Game::avoid_wall23() {
     for (int i = 0; i < 4; i++) {
-        if (robot[i].pos().x < 1 and robot[i].li_speed.x < -2
-            or robot[i].pos().x > 49 and robot[i].li_speed.x > 2
-            or robot[i].pos().y < 1 and robot[i].li_speed.y < -2
-            or robot[i].pos().y > 49 and robot[i].li_speed.y > 2) {
-            robot[i].instruct.push_back({0, 1});
+
+        if (robot[i].pos().x < 3 and robot[i].li_speed.x < -1
+            or robot[i].pos().x > 47 and robot[i].li_speed.x > 1
+            or robot[i].pos().y < 3 and robot[i].li_speed.y < -1
+            or robot[i].pos().y > 47 and robot[i].li_speed.y > 1) {
+            if (robot[i].missions.size() and
+                cal_distance(robot[i].pos(), robot[i].missions.begin()->des_buy->pos()) < 1.2) {
+                robot[i].instruct.push_back({0, 1.1});
+            }
         }
 
+        if (!robot[i].type()) {
+            // if (robot[i].pos().x < 1.1 and fabs(robot[i].direction) > PI / 2) {
+            //     robot[i].instruct.push_back({0, 1});
+            // }
+            // if (robot[i].pos().x > 48.9 and fabs(robot[i].direction) < PI / 2) {
+            //     robot[i].instruct.push_back({0, 1});
+            // }
+            // if (robot[i].pos().y < 1.1 and robot[i].direction < 0) {
+            //     robot[i].instruct.push_back({0, 1});
+            // }
+            // if (robot[i].pos().y > 48.9 and robot[i].direction > 0) {
+            //     robot[i].instruct.push_back({0, 1});
+            // }
+            continue;
+        }
+
+        // if (robot[i].pos().x < 1.1 and fabs(robot[i].direction) > PI / 2) {
+        //     robot[i].instruct.push_back({0, 0});
+        // }
+        // if (robot[i].pos().x > 48.9 and fabs(robot[i].direction) < PI / 2) {
+        //     robot[i].instruct.push_back({0, 0});
+        // }
+        // if (robot[i].pos().y < 1.1 and robot[i].direction < 0) {
+        //     robot[i].instruct.push_back({0, 0});
+        // }
+        // if (robot[i].pos().y > 48.9 and robot[i].direction > 0) {
+        //     robot[i].instruct.push_back({0, 0});
+        // }
+
+        if (robot[i].pos().x < 1.1 and robot[i].li_speed.x < -0.2) {
+            robot[i].instruct.push_back({0, 0});
+        }
+        if (robot[i].pos().x > 48.9 and robot[i].li_speed.x > 0.2) {
+            robot[i].instruct.push_back({0, 0});
+        }
+        if (robot[i].pos().y < 1.1 and robot[i].li_speed.y < -0.2) {
+            robot[i].instruct.push_back({0, 0});
+        }
+        if (robot[i].pos().y > 48.9 and robot[i].li_speed.y > 0.2) {
+            robot[i].instruct.push_back({0, 0});
+        }
+    }
+}
+
+void Game::avoid_wall1() {
+    for (int i = 0; i < 4; i++) {
+
+        if (robot[i].pos().x < 3 and robot[i].li_speed.x < -1
+            or robot[i].pos().x > 47 and robot[i].li_speed.x > 1
+            or robot[i].pos().y < 3 and robot[i].li_speed.y < -1
+            or robot[i].pos().y > 47 and robot[i].li_speed.y > 1) {
+            if (robot[i].missions.size() and
+                cal_distance(robot[i].pos(), robot[i].missions.begin()->des_buy->pos()) < 1.2) {
+                robot[i].instruct.push_back({0, 1.1});
+            }
+        }
+
+        if (!robot[i].type()) {
+            // if (robot[i].pos().x < 1.1 and fabs(robot[i].direction) > PI / 2) {
+            //     robot[i].instruct.push_back({0, 1});
+            // }
+            // if (robot[i].pos().x > 48.9 and fabs(robot[i].direction) < PI / 2) {
+            //     robot[i].instruct.push_back({0, 1});
+            // }
+            // if (robot[i].pos().y < 1.1 and robot[i].direction < 0) {
+            //     robot[i].instruct.push_back({0, 1});
+            // }
+            // if (robot[i].pos().y > 48.9 and robot[i].direction > 0) {
+            //     robot[i].instruct.push_back({0, 1});
+            // }
+            continue;
+        }
+
+        if (robot[i].pos().x < 1.1 and fabs(robot[i].direction) > PI / 2) {
+            robot[i].instruct.push_back({0, 0});
+        }
+        if (robot[i].pos().x > 48.9 and fabs(robot[i].direction) < PI / 2) {
+            robot[i].instruct.push_back({0, 0});
+        }
+        if (robot[i].pos().y < 1.1 and robot[i].direction < 0) {
+            robot[i].instruct.push_back({0, 0});
+        }
+        if (robot[i].pos().y > 48.9 and robot[i].direction > 0) {
+            robot[i].instruct.push_back({0, 0});
+        }
+
+        // if (robot[i].pos().x < 1.1 and robot[i].li_speed.x < -0.2) {
+        //     robot[i].instruct.push_back({0, 0});
+        // }
+        // if (robot[i].pos().x > 48.9 and robot[i].li_speed.x > 0.2) {
+        //     robot[i].instruct.push_back({0, 0});
+        // }
+        // if (robot[i].pos().y < 1.1 and robot[i].li_speed.y < -0.2) {
+        //     robot[i].instruct.push_back({0, 0});
+        // }
+        // if (robot[i].pos().y > 48.9 and robot[i].li_speed.y > 0.2) {
+        //     robot[i].instruct.push_back({0, 0});
+        // }
     }
 }
 
 
-#if 0
-void Game::avoid_colision() {
+void Game::avoid_wall4() {
     for (int i = 0; i < 4; i++) {
-        for (int j = i + 1; j < 4; j++) {
-            float a=robot[i].direction-cal_dir(robot[i].pos(),robot[j].pos());
-            float b=cal_dir(robot[j].pos(),robot[i].pos())-robot[j].direction;
-            while (a < -PI) {
-                a += PI * 2;
-            }
-            while (a > PI) {
-                a -= PI * 2;
-            }
-            while (b < -PI) {
-                b += PI * 2;
-            }
-            while (a > PI) {
-                b -= PI * 2;
-            }
-            bool f=false;
-            double ab=cal_distance(robot[i].pos(),robot[j].pos());
-            if(abs(a+b)<PI && ab<8){
-            a=abs(a);
-            b=abs(b);
-            double c=PI-a-b;
-            double av=sqrt(robot[i].li_speed.x*robot[i].li_speed.x+robot[i].li_speed.y*robot[i].li_speed.y);
-            double bv=sqrt(robot[j].li_speed.x*robot[j].li_speed.x+robot[j].li_speed.y*robot[j].li_speed.y);
-            double ac=ab*sin(a)/sin(PI-a-b);
-            double bc=ab*sin(b)/sin(PI-a-b);
-            double t= std::min(ac/av,bc/bv);
-            for(int k=1;k<1000;k++){
-                ab=sqrt(ac*ac+bc*bc-2*ac*bc*cos(c));
-                if(ab<1.1){
-                    f=true;
-                    break;
-                }
-                ac-=av*t/1000;
-                bc-=bv*t/1000;
-            }
-            }
-            //if(ac*bc<0) continue;
-            if(f||ab<1.1)//||( ab<2.5 && abs(abs(robot[i].direction-robot[j].direction)-PI)<0.3))
-            {
-                double cc = (rand() % 50) / 100 + 0.5;
-                cc = 1;
-                double ii = (cal_dir(robot[j].pos(),
-                                     robot[i].pos()) - robot[i].direction);//<0?-1:1;
-                while (ii < -PI) {
-                    ii += PI * 2;
-                }
-                while (ii > PI) {
-                    ii -= PI * 2;
-                }
+        // if (robot[i].pos().x < 2.6 and robot[i].li_speed.x < -0.2
+        //     or robot[i].pos().x > 47.4 and robot[i].li_speed.x > 0.2
+        //     or robot[i].pos().y < 2.6 and robot[i].li_speed.y < -0.2
+        //     or robot[i].pos().y > 47.4 and robot[i].li_speed.y > 0.2) {
+        //     robot[i].instruct.push_back({0, 4});
+        // }
 
-                ii=PI*ii*(1/abs(ii))*0.99;
 
-                //if( ab<2.5 && abs(abs(robot[i].direction-robot[j].direction)-PI)<0.3) ii=PI;
+        if (robot[i].pos().x < 2.5 and robot[i].li_speed.x < -3
+            or robot[i].pos().x > 47.4 and robot[i].li_speed.x > 3
+            or robot[i].pos().y < 2.5 and robot[i].li_speed.y < -3
+            or robot[i].pos().y > 47.4 and robot[i].li_speed.y > 3) {
+            robot[i].instruct.push_back({0, 3});
+        }
 
-                Instruct tt = {1, ii * cc};
-                robot[i].instruct.push_back(tt);
+        if (!robot[i].type()) {
+            return;
+        }
 
-                cc = (rand() % 50) / 100 + 0.5;
-                cc = 1;
-                ii = (cal_dir(robot[i].pos(),
-                              robot[j].pos()) - robot[j].direction);//<0?-1:1;
-                while (ii < -PI) {
-                    ii += PI * 2;
-                }
-                while (ii > PI) {
-                    ii -= PI * 2;
-                }
-
-                ii=PI*ii*(1/abs(ii))*0.99;
-
-                //if( ab<2.5 && abs(abs(robot[i].direction-robot[j].direction)-PI)<0.3) ii=PI;
-
-                tt = {1, ii * cc};
-                robot[j].instruct.push_back(tt);
-                //robot[i].instruct.push_back({0,1});
-            }
-
+        if (robot[i].pos().x < 1.2 and robot[i].li_speed.x < -0.1
+            or robot[i].pos().x > 48.8 and robot[i].li_speed.x > 0.1
+            or robot[i].pos().y < 1.2 and robot[i].li_speed.y < -0.1
+            or robot[i].pos().y > 48.8 and robot[i].li_speed.y > 0.1) {
+            robot[i].instruct.push_back({0, 0});
         }
     }
 }
-#endif
+
 
 
 
 void Game::avoid_colision() {
     for (int i = 0; i < 4; i++) {
         for (int j = i + 1; j < 4; j++) {
-
             // 如果 ij 的距离很大，就忽略碰撞风险
             double dis = cal_distance(robot[i].pos(), robot[j].pos());
+            if (dis > 3 && (mapID() == 2)) {
+                continue;
+            }
+            if (dis > 6 && (mapID() == 2 or mapID() == 3)) {
+                continue;
+            }
+
             if (dis > 8) {
                 continue;
             }
@@ -167,9 +221,25 @@ void Game::avoid_colision() {
                 b -= PI * 2;
             }
 
+            if (dis < 5 and fabs(a) < PI / 6 and cal_distance(robot[j].pos(), robot[j].target_pos()) < 0.3) {
+                if (robot[i].target_pos() == robot[j].target_pos()) {
+                    robot[i].instruct.push_back({0, 1});
+                    return;
+                }
+            }
+
+            if (dis < 5 and fabs(b) < PI / 6 and cal_distance(robot[i].pos(), robot[i].target_pos()) < 0.3) {
+                if (robot[i].target_pos() == robot[j].target_pos()) {
+                    robot[j].instruct.push_back({0, 1});
+                    return;
+                }
+            }
+
             // 有迎头相撞的风险
             if ((dis > 5 and fabs(a) < PI / 4 and fabs(b) < PI / 4)
-                or (dis < 5 and fabs(a) < PI * 0.5 and fabs(b) < PI * 0.5)) {
+                or (dis < 5 and fabs(a) < PI * 0.5 and fabs(b) < PI * 0.5)
+                or (dis < 5 and fabs(a) < PI / 6 and cal_distance(robot[j].pos(), robot[j].target_pos()) < 0.3)
+                or (dis < 5 and fabs(b) < PI / 6 and cal_distance(robot[i].pos(), robot[i].target_pos()) < 0.3)) {
 
                 double ti = PI, tj = PI;
                 if (a < 0) {
@@ -182,14 +252,38 @@ void Game::avoid_colision() {
                 // 根据距离决定转向幅度
                 if (dis < 3) {
                     ;
+                } else if (mapID() == 3) {
+                    ti *= 0.7;
+                    tj *= 0.7;
+                } else if (mapID() == 2) {
+                    ti *= 0.9;
+                    tj *= 0.9;
                 } else {
                     ti *= 0.5;
                     tj *= 0.5;
                 }
-                // 调整转向的优先级
-                if (robot[i].type()) {
+
+                if (dis < 5 and fabs(a) < PI / 6 and cal_distance(robot[j].pos(), robot[j].target_pos()) < 0.3) {
+                    robot[i].instruct.push_back({1, ti});
+                    return;
+                }
+
+                if (dis < 5 and fabs(b) < PI / 6 and cal_distance(robot[i].pos(), robot[i].target_pos()) < 0.3) {
                     robot[j].instruct.push_back({1, tj});
-                } else if (robot[j].type()) {
+                    return;
+                }
+
+
+                // 调整转向的优先级
+                double d1 = cal_distance(robot[i].pos(), robot[i].target_pos());
+                double d2 = cal_distance(robot[j].pos(), robot[j].target_pos());
+                if (d1 < 1 and d2 > 3) {
+                    robot[j].instruct.push_back({1, tj});
+                } else if (d1 > 3 and d2 < 1) {
+                    robot[i].instruct.push_back({1, ti});
+                } else if (robot[i].type() and !robot[j].type()) {
+                    robot[j].instruct.push_back({1, tj});
+                } else if (robot[j].type() and !robot[i].type()) {
                     robot[i].instruct.push_back({1, ti});
                 } else {
                     double d1 = cal_distance(robot[i].pos(), robot[i].target_pos());
@@ -234,7 +328,7 @@ void Game::avoid_colision() {
 
                 ii = PI * ii * (1 / abs(ii)) * 0.99;
 
-                Instruct tt = {1, ii *cc};
+                Instruct tt = {1, ii * cc};
 
 
                 cc = (rand() % 50) / 100 + 0.5;
@@ -250,7 +344,7 @@ void Game::avoid_colision() {
 
                 ii = PI * ii * (1 / abs(ii)) * 0.99;
 
-                tt = {1, ii *cc};
+                tt = {1, ii * cc};
                 robot[j].instruct.push_back(tt);
                 //robot[i].instruct.push_back({0,1});
             }
@@ -261,10 +355,9 @@ void Game::avoid_colision() {
 
 
 
-
 void Game::calculate_frame() {
-
     taskmanager.init_tasks(workbench, robot);
+
 
     // 第一轮分配，只考虑手里有任务的机器人，尝试给他续上
     for (int i = 0; i < 4; i++) {
@@ -276,6 +369,70 @@ void Game::calculate_frame() {
         Workbench *des_buy = NULL, *des_sell = NULL;
 
         for (Task task : taskmanager.tasks) {
+            if (wbtypes[7].size() == 0 and task.workbench_sell->type() != 9) {
+                if (i == 0) {
+                    if (!(task.workbench_buy->pos().y > 36
+                          and task.workbench_sell->pos().y > 36)) {
+                        continue;
+                    }
+                    if (task.workbench_buy->type() == 2) {
+                        continue;
+                    }
+                }
+                if (i == 1) {
+                    if (!(task.workbench_buy->pos().x > 40
+                          and task.workbench_buy->pos().x < 48
+                          and task.workbench_buy->pos().y < 33
+                          and task.workbench_buy->pos().y > 19
+                          and task.workbench_sell->pos().x > 40
+                          and task.workbench_sell->pos().x < 45
+                          and task.workbench_sell->pos().y < 33
+                          and task.workbench_sell->pos().y > 19)) {
+                        continue;
+                    }
+                    if (task.workbench_buy->type() == 1) {
+                        continue;
+                    }
+                }
+                if (i == 2) {
+                    // if (!(task.workbench_buy->pos().x > 30
+                    //       and task.workbench_buy->pos().y < 15)) {
+                    //     continue;
+                    // }
+                    // if (task.workbench_buy->type() == 3) {
+                    //     continue;
+                    // }
+                    if (!(task.workbench_buy->pos().x > 40
+                          and task.workbench_buy->pos().x < 48
+                          and task.workbench_buy->pos().y < 33
+                          and task.workbench_buy->pos().y > 19
+                          and task.workbench_sell->pos().x > 40
+                          and task.workbench_sell->pos().x < 45
+                          and task.workbench_sell->pos().y < 33
+                          and task.workbench_sell->pos().y > 19)) {
+                        continue;
+                    }
+                    if (task.workbench_buy->type() == 1) {
+                        continue;
+                    }
+                }
+                if (i == 3) {
+                    // if (!(task.workbench_buy->pos().x < 10
+                    //       and task.workbench_buy->pos().y > 18)) {
+                    //     continue;
+                    // }
+                    // if (task.workbench_buy->type() == 3) {
+                    //     continue;
+                    // }
+                    if (!(task.workbench_buy->pos().y > 36
+                          and task.workbench_sell->pos().y > 36)) {
+                        continue;
+                    }
+                    if (task.workbench_buy->type() == 2) {
+                        continue;
+                    }
+                }
+            }
             if (task.workbench_buy != robot[i].missions.rbegin()->des_sell) {
                 continue;
             }
@@ -283,6 +440,23 @@ void Game::calculate_frame() {
             // 任务的原料或产品其一被预定了，直接跳过
             if (task.workbench_buy->check_reserved_product()
                 or task.workbench_sell->check_reserved_material(task.workbench_buy->type())) {
+                continue;
+            }
+
+            // 如果他前面有更近的机器人，跳过
+            bool flg = 0;
+            for (int j = 0; j < 4; j++) {
+                if (j == i) {
+                    continue;
+                }
+
+                if (robot[i].missions.rbegin()->des_sell == robot[j].missions.rbegin()->des_sell
+                    and robot[i].time_to_free() > robot[j].time_to_free()) {
+                    flg = 1;
+                    break;
+                }
+            }
+            if (flg) {
                 continue;
             }
 
@@ -297,7 +471,9 @@ void Game::calculate_frame() {
         }
 
         if (des_buy != NULL and des_sell != NULL) {
-            des_buy->reserve_product();
+            if (mapID() == 3 or des_buy->type() > 3) {
+                des_buy->reserve_product();
+            }
             des_sell->reserve_material(des_buy->type());
             robot[i].add_mission(des_buy, des_sell);
         }
@@ -318,6 +494,70 @@ void Game::calculate_frame() {
         Workbench *des_buy = NULL, *des_sell = NULL;
 
         for (Task task : taskmanager.tasks) {
+            if (wbtypes[7].size() == 0 and task.workbench_sell->type() != 9) {
+                if (i == 0) {
+                    if (!(task.workbench_buy->pos().y > 36
+                          and task.workbench_sell->pos().y > 36)) {
+                        continue;
+                    }
+                    if (task.workbench_buy->type() == 2) {
+                        continue;
+                    }
+                }
+                if (i == 1) {
+                    if (!(task.workbench_buy->pos().x > 40
+                          and task.workbench_buy->pos().x < 48
+                          and task.workbench_buy->pos().y < 33
+                          and task.workbench_buy->pos().y > 19
+                          and task.workbench_sell->pos().x > 40
+                          and task.workbench_sell->pos().x < 45
+                          and task.workbench_sell->pos().y < 33
+                          and task.workbench_sell->pos().y > 19)) {
+                        continue;
+                    }
+                    if (task.workbench_buy->type() == 1) {
+                        continue;
+                    }
+                }
+                if (i == 2) {
+                    // if (!(task.workbench_buy->pos().x > 30
+                    //       and task.workbench_buy->pos().y < 15)) {
+                    //     continue;
+                    // }
+                    // if (task.workbench_buy->type() == 3) {
+                    //     continue;
+                    // }
+                    if (!(task.workbench_buy->pos().x > 40
+                          and task.workbench_buy->pos().x < 48
+                          and task.workbench_buy->pos().y < 33
+                          and task.workbench_buy->pos().y > 19
+                          and task.workbench_sell->pos().x > 40
+                          and task.workbench_sell->pos().x < 45
+                          and task.workbench_sell->pos().y < 33
+                          and task.workbench_sell->pos().y > 19)) {
+                        continue;
+                    }
+                    if (task.workbench_buy->type() == 1) {
+                        continue;
+                    }
+                }
+                if (i == 3) {
+                    // if (!(task.workbench_buy->pos().x < 10
+                    //       and task.workbench_buy->pos().y > 18)) {
+                    //     continue;
+                    // }
+                    // if (task.workbench_buy->type() == 3) {
+                    //     continue;
+                    // }
+                    if (!(task.workbench_buy->pos().y > 36
+                          and task.workbench_sell->pos().y > 36)) {
+                        continue;
+                    }
+                    if (task.workbench_buy->type() == 2) {
+                        continue;
+                    }
+                }
+            }
 
             // 任务的原料或产品其一被预定了，直接跳过
             if (task.workbench_buy->check_reserved_product()
@@ -326,6 +566,13 @@ void Game::calculate_frame() {
             }
 
             double now_score = task.value[i];
+
+            // if (!wbtypes[7].size() and frameID >= 8000) {
+            //     if (task.workbench_buy->type() <= 3) {
+            //         now_score *= 0.01;
+            //         continue;
+            //     }
+            // }
 
             // 挑选最优任务
             if (now_score > max_score) {
@@ -336,10 +583,11 @@ void Game::calculate_frame() {
         }
 
         if (des_buy != NULL and des_sell != NULL) {
-            des_buy->reserve_product();
+            if (mapID() == 3 or des_buy->type() > 3) {
+                des_buy->reserve_product();
+            }
             des_sell->reserve_material(des_buy->type());
             robot[i].add_mission(des_buy, des_sell);
-
         }
 
         if (robot[i].has_mission()) {
@@ -348,19 +596,34 @@ void Game::calculate_frame() {
     }
 
     avoid_colision();
-    avoid_wall();
 
-    // 防止在墙角堵死，规定同一个墙角只能进去一个机器人
-    for (int i = 0; i < 4; i++) {
-        for (int j = i + 1; j < 4; j++) {
-            if (robot[i].corner_pos().x != 25 and robot[i].corner_pos() == robot[j].corner_pos()){
-                if (robot[i].corner_dis() < robot[j].corner_dis()) {
-                    robot[j].instruct.push_back({0, 0});
-                } else {
-                    robot[i].instruct.push_back({0, 0});
+    if (mapID() != 3) {
+        // 防止在墙角堵死，规定同一个墙角只能进去一个机器人
+        for (int i = 0; i < 4; i++) {
+            for (int j = i + 1; j < 4; j++) {
+                if (robot[i].corner_pos().x != -1 and robot[i].corner_pos() == robot[j].corner_pos()) {
+                    int t = robot[i].corner_dis() < robot[j].corner_dis() ? j : i;
+                    double dir_bias = robot[t].direction - cal_dir(robot[t].position, robot[t].corner_pos());
+                    if (dir_bias > PI) {
+                        dir_bias -= 2 * PI;
+                    } else if (dir_bias < -PI) {
+                        dir_bias += 2 * PI;
+                    }
+
+                    if (fabs(dir_bias) > PI / 2) {
+                        continue;
+                    }
+                    robot[t].instruct.push_back({0, 1});
                 }
             }
         }
+    }
+    if (mapID() == 2 or mapID() == 3) {
+        avoid_wall23();
+    } else if (mapID() == 1) {
+        avoid_wall1();
+    } else {
+        avoid_wall4();
     }
 }
 
@@ -405,7 +668,7 @@ void Game::lets_work() {
 
     if (wbtypes[7].size()) {
         reliance[9] = {7};
-    } else if (reliance[4].size() + reliance[5].size() + reliance[6].size()) {
+    } else if (wbtypes[4].size() + wbtypes[5].size() + wbtypes[6].size()) {
         reliance[9] = {4, 5, 6};
     } else {
         reliance[9] = {1, 2, 3};
