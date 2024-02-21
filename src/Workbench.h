@@ -2,7 +2,7 @@
 
 
 #include "Map.h"
-#include "Point.h"
+#include "geometry.h"
 #include "state.h"
 
 #include <set>
@@ -76,6 +76,11 @@ public:
      * 功能：返回这个工作台的位置
     */
     Point pos();
+
+    Point GetPosition();
+    int GetId();
+    int GetType();
+    
 
     /**
      * 功能：查询这个工作台是否拥有原料 x

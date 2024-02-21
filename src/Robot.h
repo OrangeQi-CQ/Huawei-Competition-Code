@@ -1,237 +1,119 @@
 #pragma once
 
-#include "Point.h"
+#include "geometry.h"
 #include "Workbench.h"
 #include "state.h"
 
+#include <bits/stdc++.h>
 #include <vector>
 #include <list>
 
 
 
-
-
-/**
- * 结构体：机器人发出的指令
-*/
-struct Instruct {
-    /**
-     * 指令的编号，从 0~4依次对应：
-     * forward, rotate, buy, sell, destroy
-    */
-    int instruct_type;
-
-
-    /**
-     * 指令的参数2 (PS. 参数 1 是机器人编号)
-    */
-    double parameter = 0;
-};
-
-
-
-
-/**
- * 结构体：机器人正在执行的任务
-*/
-struct Mission {
-
-    /**
-     * 想要去购买的工作台指针，以及是否已经完成购买
-    */
-    Workbench *des_buy;
-    bool flg_buy = 0;
-
-    /**
-     * 想要去售卖的工作台指针，以及是否已经完成售卖
-    */
-    Workbench *des_sell;
-    bool flg_sell = 0;
-};
-
-
-
-
 class Robot {
 public:
-
-    friend class Game;
-    friend class TaskManager;
-
-    // 游戏地图
-    // GameMap *gamemap;
+    using Instruct = std::pair<std::string, double>;
+    using Mission = std::pair<Workbench *, Workbench *>;
 
     /**
-     * 功能：在当前帧中读入该机器人的参数
+     * @brief 每个机器人在每一帧 开头 都需要调用这个函数，读入机器人当前的状态参数。
     */
-    void read(int ID);
+    void ReadFrame(int id);
 
     /**
-    * 参数：当前机器人的 ID
-    * 功能：在一帧中，输出这个机器人的指令，并清空指令集
+     * @brief 每个机器人在每一帧 结束 都需要调用这个函数，输出机器人当前帧的控制指令
     */
-    void print_instruct(int ID);
-
-
+    void PrintInstruct(int id);
 
     /**
-     * 参数：两个工作台的指针
-     * 功能：添加一组任务：从 workbench_buy 那里买，卖到 workbench_sell 那里去
+     * @brief 指定买家和卖家，为机器人添加一组任务
     */
-    void add_mission(Workbench *workbench_buy, Workbench *workbench_sell);
-
+    void AddMision(Workbench *buy_ptr, Workbench *sell_ptr);
 
     /**
-    * 功能：在一帧当中执行任务
-    *   1. 根据 mission 中的信息，维护： target_position
-    *   2. 根据当前状态判断是否该 buy() 或 sell() 或 destroy()
+     * @brief 计算当前帧的指令
+     * 1. 根据 mission 中的信息，维护： target_position
+     * 2. 根据当前状态判断是否该 buy() 或 sell() 或 destroy()
     */
-    void perform_mission();
+    void CalcInstruct();
 
     /**
-     * 功能：结束任务；
+     * @brief 结束任务
     */
-    void finish_mission();
+    void FinishMission();
 
+private:
+    /**
+     * @brief 设定目的地
+    */
+    void SetTargetPosition(std::optional<Point> target);
 
     /**
-     * 功能：修改这个机器人的目标位置、目标动作
+     * @brief 计算移动类指令
     */
-    void change_target(Point target_point);
-
+    void CalcMovingInstruct();
 
     /**
-     * 功能：计算当前帧的指令，结果保存到 instruct 中
-     * 指令设计的依据是：Ptarget_position
+     * @brief 生成购买的指令
     */
-    void move_to_target();
-
-
+    void Buy();
 
     /**
-     * 功能：输出 卖出 的指令到 instruct 中
+     * @brief 生成出售的指令
     */
-    void buy();
-
+    void Sell();
 
     /**
-     * 功能：输出 购买 的指令到 instruct 中
+     * @brief 生成销毁的指令
     */
-    void sell();
+    void Destroy();
 
+public:
+    int GetId() { return id_; }
 
     /**
-     * 功能：输出 销毁 的指令到 instruct 中
+     * @brief 查询携带物品的编号。
+     * @return 0 没有物品，1-7 对应 7 种物品
     */
-    void destroy();
+    int GetObjectType() { return object_type_; }
 
+    Point GetPosition() { return position_; }
 
+    std::optional<Point> GetTargetPos() { return target_position_; }
+
+    bool HasMission() { return !missions_.empty(); }
 
     /**
-    * 功能：返回这个机器人的ID
+     * @brief 返回这个机器人所在的工作台编号
+     * @return -1：没有处在任何工作台附近；否则返回所在工作台编号
     */
-    int ID();
+    int GetWorkbenchId() { return workbench_id_; }
 
-
-    /**
-     * 功能：返回这个机器人所携带的物品编号；
-     * 0：没有物品
-     * 1-7：对应 7 种物品
-    */
-    int type();
-
-
-
-
-    /**
-     * 功能：返回机器人的位置
-    */
-    Point pos();
-
-
-    /**
-     * 功能：返回这个机器人当前动作的目标位置
-    */
-    Point target_pos();
-
-
-
-    /**
-     * 功能：返回当前机器人是否在任务中
-    */
-    bool has_mission();
-
-
-    /**
-    * 功能：返回这个机器人所在的工作台编号；
-    * -1：没有处在任何工作台附近
-    * 0 ~ num_workbench - 1：所在工作台编号
-    */
-    int workbench();
-
-
-
-    /**
-     * 功能：返回这个机器人完成已有的所有指令剩余的时间
-    */
-    double time_to_free();
-
+    double GetTimeFree();
 
     /**
      * 功能：返回这个机器人所处在的墙角编号
     */
-    Point corner_pos();
+    Point GetCornerId();
 
+    Point GetCornerDis();
 
-    /**
-     * 功能：返回这个机器人距离他最近的墙角的距离
-    */
-    double corner_dis();
 
 private:
+    std::vector<Instruct> instructs_; // 这一帧准备输出的指令集
+    std::list<Mission> missions_; // 这个机器人已经有的任务集合
 
-    // 当前机器人即将发出的指令集
-    std::vector<Instruct> instruct;
+    int id_;    // 机器人的编号
+    int workbench_id_ = -1; // 所在工作台编号，如果周围没有工作台则为 -1
+    int object_type_; // 手头物品的编号，没有物品为 0
+    double time_value_;    // 时间价值系数（似乎没卵用）
+    double collision_value_; // 碰撞价值系数（似乎没卵用）
+    double angle_speed_; // 角速度（正为逆时针，负为顺时针）
+    Speed linear_speed_; // 横、纵坐标线速度
+    double direction_; // 方向（0 为朝右，pi/2 为朝上，-pi/2 为朝下）
+    Point position_; // 横、纵位置坐标
 
-    // 这个机器人已经有的任务集合
-    std::list<Mission> missions;
-
-
-    // 当前机器人编号，也就是 robot 的数组下标
-    int RobotID;
-
-    // 手头物品的编号，没有物品为 0
-    int object_type;
-
-    // 所在工作台编号，如果不再工作台为 -1
-    int workbench_type = -1;
-
-    // 时间价值系数
-    double time_value;
-
-    // 碰撞价值系数
-    double collision_value;
-
-    // 半径
-    double radius;
-
-    // 重量
-    double weight;
-
-    // 方向（0 为朝右，pi/2 为朝上，-pi/2 为朝下）
-    double direction;
-
-    // 角速度（正为逆时针，负为顺时针）
-    double an_speed;
-
-    // 横、纵坐标线速度
-    Speed li_speed;
-
-    // 横、纵位置坐标
-    Point position;
-
-    // 记录这个机器人想要前往的工作台编号
-    Point target_position = {-1, -1};
-
-
+    double radius_;  // 机器人半径
+    double weight_; // 机器人重量
+    std::optional<Point> target_position_ = std::nullopt;  // 这个机器人正在前往的工作台编号
 };

@@ -17,6 +17,6 @@ public:
     // void read_map(Workbench workbench[]);
 
 
-    char game_map[105][105];
-    char templine[1024];
+    char game_map_[105][105];
+    char templine_[1024];
 };

@@ -3,8 +3,7 @@
 #include "Robot.h"
 #include "Workbench.h"
 #include "Map.h"
-#include "Object.h"
-#include "Point.h"
+#include "geometry.h"
 #include "state.h"
 #include "Task.h"
 

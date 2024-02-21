@@ -1,9 +1,8 @@
 #include "Robot.h"
 #include "Workbench.h"
 #include "Map.h"
-#include "Object.h"
 #include "game.h"
-#include "Point.h"
+#include "geometry.h"
 
 
 #include <iostream>
