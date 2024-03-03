@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/main.dir/Map.cpp.o CMakeFiles/main.dir/Object.cpp.o CMakeFiles/main.dir/Point.cpp.o CMakeFiles/main.dir/Robot.cpp.o CMakeFiles/main.dir/Task.cpp.o CMakeFiles/main.dir/Workbench.cpp.o CMakeFiles/main.dir/game.cpp.o CMakeFiles/main.dir/main.cpp.o CMakeFiles/main.dir/state.cpp.o -o main 

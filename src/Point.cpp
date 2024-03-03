@@ -1,10 +1,8 @@
 #include "Point.h"
 
-
 double cal_distance(Point a, Point b) {
     return sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
 }
-
 
 angle cal_dir(Direction a) {
     if (fabs(a.x) < 1e-5) {
@@ -28,7 +26,4 @@ angle cal_dir(Direction a) {
     return res;
 }
 
-
-angle cal_dir(Point a, Point b) {
-    return cal_dir({b.x - a.x, b.y - a.y});
-}
+angle cal_dir(Point a, Point b) { return cal_dir({b.x - a.x, b.y - a.y}); }

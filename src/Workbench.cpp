@@ -1,14 +1,13 @@
-#include "Robot.h"
 #include "Workbench.h"
-#include "Map.h"
-#include "Object.h"
-#include "game.h"
-#include "Point.h"
-#include "state.h"
 
 #include <iostream>
 
-
+#include "Map.h"
+#include "Object.h"
+#include "Point.h"
+#include "Robot.h"
+#include "game.h"
+#include "state.h"
 
 void Workbench::read(int id) {
     workbenchID = id;
@@ -57,8 +56,6 @@ void Workbench::read(int id) {
     scanf("%d", &Have_product);
 }
 
-
-
 /*************************************************************/
 // 关于预定的一组函数
 
@@ -70,52 +67,30 @@ void Workbench::reserve_material(int type_material) {
     material_is_reserved[type_material] = 1;
 }
 
-
 void Workbench::cancel_reserve_material(int type_material) {
     material_is_reserved[type_material] = 0;
 }
 
+bool Workbench::check_reserved_product() { return product_is_reserved; }
 
-bool Workbench::check_reserved_product() {
-    return product_is_reserved;
-}
+void Workbench::reserve_product() { product_is_reserved = 1; }
 
-void Workbench::reserve_product() {
-    product_is_reserved = 1;
-}
-
-
-void Workbench::cancel_reserve_product() {
-    product_is_reserved = 0;
-}
-
+void Workbench::cancel_reserve_product() { product_is_reserved = 0; }
 
 /*************************************************************/
 // 用于查询的函数
 
-
-int Workbench::ID() {
-    return workbenchID;
-}
-
+int Workbench::ID() { return workbenchID; }
 
 bool Workbench::find_material(int x) {
     return now_material.find(x) != now_material.end();
 }
 
+int Workbench::type() { return workbench_type; }
 
-int Workbench::type() {
-    return workbench_type;
-}
+Point Workbench::pos() { return position; }
 
-Point Workbench::pos() {
-    return position;
-}
-
-bool Workbench::have_product() {
-    return Have_product;
-}
-
+bool Workbench::have_product() { return Have_product; }
 
 double Workbench::waiting_time() {
     return 1.0 * remaining_prodution_frame / 50;
