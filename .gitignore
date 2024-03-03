@@ -1,3 +1,5 @@
 judger/*
+!judger/.gitignore
 build/*
-!build/.gitnore
+!build/.gitignore
+
