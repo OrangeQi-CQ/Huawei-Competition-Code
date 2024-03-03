@@ -169,6 +169,60 @@ Map.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Map.cpp.s
 .PHONY : Map.cpp.s
 
+Object.o: Object.cpp.o
+
+.PHONY : Object.o
+
+# target to build an object file
+Object.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Object.cpp.o
+.PHONY : Object.cpp.o
+
+Object.i: Object.cpp.i
+
+.PHONY : Object.i
+
+# target to preprocess a source file
+Object.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Object.cpp.i
+.PHONY : Object.cpp.i
+
+Object.s: Object.cpp.s
+
+.PHONY : Object.s
+
+# target to generate assembly for a file
+Object.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Object.cpp.s
+.PHONY : Object.cpp.s
+
+Point.o: Point.cpp.o
+
+.PHONY : Point.o
+
+# target to build an object file
+Point.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Point.cpp.o
+.PHONY : Point.cpp.o
+
+Point.i: Point.cpp.i
+
+.PHONY : Point.i
+
+# target to preprocess a source file
+Point.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Point.cpp.i
+.PHONY : Point.cpp.i
+
+Point.s: Point.cpp.s
+
+.PHONY : Point.s
+
+# target to generate assembly for a file
+Point.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/Point.cpp.s
+.PHONY : Point.cpp.s
+
 Robot.o: Robot.cpp.o
 
 .PHONY : Robot.o
@@ -277,33 +331,6 @@ game.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/game.cpp.s
 .PHONY : game.cpp.s
 
-geometry.o: geometry.cpp.o
-
-.PHONY : geometry.o
-
-# target to build an object file
-geometry.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/geometry.cpp.o
-.PHONY : geometry.cpp.o
-
-geometry.i: geometry.cpp.i
-
-.PHONY : geometry.i
-
-# target to preprocess a source file
-geometry.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/geometry.cpp.i
-.PHONY : geometry.cpp.i
-
-geometry.s: geometry.cpp.s
-
-.PHONY : geometry.s
-
-# target to generate assembly for a file
-geometry.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/main.dir/build.make CMakeFiles/main.dir/geometry.cpp.s
-.PHONY : geometry.cpp.s
-
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -370,6 +397,12 @@ help:
 	@echo "... Map.o"
 	@echo "... Map.i"
 	@echo "... Map.s"
+	@echo "... Object.o"
+	@echo "... Object.i"
+	@echo "... Object.s"
+	@echo "... Point.o"
+	@echo "... Point.i"
+	@echo "... Point.s"
 	@echo "... Robot.o"
 	@echo "... Robot.i"
 	@echo "... Robot.s"
@@ -382,9 +415,6 @@ help:
 	@echo "... game.o"
 	@echo "... game.i"
 	@echo "... game.s"
-	@echo "... geometry.o"
-	@echo "... geometry.i"
-	@echo "... geometry.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
