@@ -1,3 +1,0 @@
-/root/LinuxRelease/src/CMakeFiles/rebuild_cache.dir
-/root/LinuxRelease/src/CMakeFiles/edit_cache.dir
-/root/LinuxRelease/src/CMakeFiles/main.dir
