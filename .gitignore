@@ -1,4 +1,3 @@
-judger/*
-!judger/.gitignore
+LinuxRelease/replay/*
 build/*
-!build/.gitignore
+*.zip
